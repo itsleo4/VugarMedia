@@ -17,6 +17,7 @@
                         secondary: '#9333ea',
                         dark: '#0f172a',
                         light: '#f8fafc',
+                        accentYellow: '#facc15', /* Added for consistency with donate page */
                     }
                 }
             }
@@ -28,6 +29,26 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Custom styles for mobile menu slide-in/out */
+        .mobile-menu-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Allows clicks through when hidden */
+        }
+        .mobile-menu-overlay.open {
+            opacity: 1;
+            pointer-events: auto; /* Blocks clicks when open */
+        }
+    </style>
 </head>
 <body class="bg-dark text-light font-sans antialiased">
     <!-- Navigation Bar -->
@@ -42,28 +63,81 @@
             </a>
             
             <!-- Desktop Navigation -->
-            <div id="authLinks" class="hidden md:flex items-center space-x-6">
+            <div id="desktopNav" class="hidden md:flex items-center space-x-6">
                 <a href="explore.html" class="text-gray-300 hover:text-white transition">Explore</a>
                 <a href="membership.html" class="text-gray-300 hover:text-white transition">Membership</a>
                 <a href="#" class="text-gray-300 hover:text-white transition">About</a>
                 
                 <div class="flex space-x-3 ml-4">
                     <!-- Login/Register links (will be hidden when logged in) -->
-                    <a href="login.html" id="loginLink" class="px-4 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition">Login</a>
-                    <a href="register.html" id="registerLink" class="px-4 py-2 rounded-md bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 transition">Register</a>
+                    <a href="login.html" id="loginLinkDesktop" class="px-4 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition">Login</a>
+                    <a href="register.html" id="registerLinkDesktop" class="px-4 py-2 rounded-md bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 transition">Register</a>
 
                     <!-- Logged-in elements (initially hidden) -->
-                    <span id="welcomeUser" class="text-white px-4 py-2 hidden"></span> 
-                    <button id="logoutButton" class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition hidden">Logout</button>
+                    <span id="welcomeUserDesktop" class="text-white px-4 py-2 hidden"></span> 
+                    <button id="logoutButtonDesktop" class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition hidden">Logout</button>
                 </div>
             </div>
             
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-300 hover:text-white">
+            <!-- Mobile Menu Button (Hamburger) -->
+            <button id="mobileMenuButton" class="md:hidden text-gray-300 hover:text-white">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 z-40 hidden"></div>
+
+    <!-- Mobile Menu Panel (Pornhub-style) -->
+    <div id="mobileMenuPanel" class="mobile-menu-panel fixed top-0 right-0 h-full w-64 bg-dark z-50 p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+            <!-- Logo in Mobile Menu -->
+            <img src="file_00000000528861f59ec1d1a67569dffe.jpg" alt="VugarMedia Logo" class="h-8 w-auto">
+            <button id="closeMobileMenuButton" class="text-gray-400 hover:text-white text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="flex flex-col space-y-4 flex-grow">
+            <!-- Auth Options (Dynamic) -->
+            <a href="register.html" id="signUpLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-user-plus text-xl w-6 text-center"></i>
+                <span>Sign Up</span>
+            </a>
+            <a href="login.html" id="logInLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-sign-in-alt text-xl w-6 text-center"></i>
+                <span>Log In</span>
+            </a>
+            <a href="explore.html" id="likedVideosLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-heart text-xl w-6 text-center"></i>
+                <span>Liked Videos</span>
+            </a>
+            <a href="#" id="uploadOptionMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-cloud-upload-alt text-xl w-6 text-center"></i>
+                <span>Upload (Optional)</span>
+            </a>
+            <a href="#" id="faqLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-question-circle text-xl w-6 text-center"></i>
+                <span>FAQ</span>
+            </a>
+            <a href="#" id="contactSupportLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
+                <i class="fas fa-headset text-xl w-6 text-center"></i>
+                <span>Contact Support</span>
+            </a>
+            
+            <div id="loggedInOptionsMobile" class="flex flex-col space-y-4 hidden mt-auto pt-4 border-t border-gray-700">
+                <span id="welcomeUserMobile" class="text-white font-semibold flex items-center space-x-3">
+                    <i class="fas fa-user-circle text-xl w-6 text-center"></i>
+                    <span></span>
+                </span>
+                <button id="logoutButtonMobile" class="flex items-center space-x-3 text-red-500 hover:text-red-400 transition">
+                    <i class="fas fa-sign-out-alt text-xl w-6 text-center"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="relative py-16 md:py-24 overflow-hidden">
@@ -177,7 +251,7 @@
             </div>
             
             <div class="text-center mt-10">
-                <!-- FIX: Changed href from '#' to 'explore.html' for "View More Content" -->
+                <!-- FIX: Corrected href to explore.html -->
                 <a href="explore.html" class="inline-flex items-center text-primary hover:text-secondary font-medium">
                     View More Content <i class="fas fa-arrow-right ml-2"></i>
                 </a>
@@ -246,67 +320,138 @@
     </footer>
 
     <!-- JavaScript for login/logout functionality and button visibility -->
-    <!-- IMPORTANT: Place this script here, just before </body> -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Navigation bar elements
-            const loginLink = document.getElementById('loginLink');
-            const registerLink = document.getElementById('registerLink');
-            const welcomeUser = document.getElementById('welcomeUser');
-            const logoutButton = document.getElementById('logoutButton');
+            // Desktop Navigation elements
+            const loginLinkDesktop = document.getElementById('loginLinkDesktop');
+            const registerLinkDesktop = document.getElementById('registerLinkDesktop');
+            const welcomeUserDesktop = document.getElementById('welcomeUserDesktop');
+            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
+
+            // Mobile Navigation elements
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+
+            const signUpLinkMobile = document.getElementById('signUpLinkMobile');
+            const logInLinkMobile = document.getElementById('logInLinkMobile');
+            const likedVideosLinkMobile = document.getElementById('likedVideosLinkMobile');
+            const uploadOptionMobile = document.getElementById('uploadOptionMobile');
+            const faqLinkMobile = document.getElementById('faqLinkMobile');
+            const contactSupportLinkMobile = document.getElementById('contactSupportLinkMobile');
+            const loggedInOptionsMobile = document.getElementById('loggedInOptionsMobile');
+            const welcomeUserMobile = document.getElementById('welcomeUserMobile');
+            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+
 
             // Hero section buttons
             const getStartedButton = document.getElementById('getStartedButton');
             const supportUsButton = document.getElementById('supportUsButton');
 
-            // Check if user is logged in
-            const user = JSON.parse(localStorage.getItem('user'));
+            // Function to update UI based on login status
+            function updateUI() {
+                const user = JSON.parse(localStorage.getItem('user'));
 
-            if (user && user.loggedIn) {
-                // User is logged in:
-                // Hide login/register in navbar
-                if (loginLink) loginLink.classList.add('hidden');
-                if (registerLink) registerLink.classList.add('hidden');
-                
-                // Show welcome message and logout button in navbar
-                if (welcomeUser) {
-                    welcomeUser.textContent = `Welcome, ${user.username}!`;
-                    welcomeUser.classList.remove('hidden');
+                // Desktop UI updates
+                if (user && user.loggedIn) {
+                    // Logged in
+                    if (loginLinkDesktop) loginLinkDesktop.classList.add('hidden');
+                    if (registerLinkDesktop) registerLinkDesktop.classList.add('hidden');
+                    if (welcomeUserDesktop) {
+                        welcomeUserDesktop.textContent = `Welcome, ${user.username}!`;
+                        welcomeUserDesktop.classList.remove('hidden');
+                    }
+                    if (logoutButtonDesktop) logoutButtonDesktop.classList.remove('hidden');
+
+                    // Hero section buttons
+                    if (getStartedButton) getStartedButton.classList.add('hidden');
+                    if (supportUsButton) supportUsButton.classList.remove('hidden'); // Ensure Support Us is visible
+
+                    // Mobile UI updates (when logged in)
+                    if (signUpLinkMobile) signUpLinkMobile.classList.add('hidden');
+                    if (logInLinkMobile) logInLinkMobile.classList.add('hidden');
+                    if (loggedInOptionsMobile) loggedInOptionsMobile.classList.remove('hidden');
+                    if (welcomeUserMobile) welcomeUserMobile.querySelector('span').textContent = `Welcome, ${user.username}!`;
+                    if (logoutButtonMobile) logoutButtonMobile.classList.remove('hidden');
+
+                } else {
+                    // Not logged in
+                    if (loginLinkDesktop) loginLinkDesktop.classList.remove('hidden');
+                    if (registerLinkDesktop) registerLinkDesktop.classList.remove('hidden');
+                    if (welcomeUserDesktop) welcomeUserDesktop.classList.add('hidden');
+                    if (logoutButtonDesktop) logoutButtonDesktop.classList.add('hidden');
+
+                    // Hero section buttons
+                    if (getStartedButton) getStartedButton.classList.remove('hidden');
+                    if (supportUsButton) supportUsButton.classList.remove('hidden'); // Ensure Support Us is visible
+
+                    // Mobile UI updates (when not logged in)
+                    if (signUpLinkMobile) signUpLinkMobile.classList.remove('hidden');
+                    if (logInLinkMobile) logInLinkMobile.classList.remove('hidden');
+                    if (loggedInOptionsMobile) loggedInOptionsMobile.classList.add('hidden');
                 }
-                if (logoutButton) logoutButton.classList.remove('hidden');
-
-                // Hide 'Get Started' button in hero section
-                // This ensures it's hidden when a user is logged in
-                if (getStartedButton) getStartedButton.classList.add('hidden');
-
-                // Ensure 'Support Us' button is visible and remains eye-catching
-                // It's already styled to be eye-catching by default.
-                if (supportUsButton) supportUsButton.classList.remove('hidden');
-
-            } else {
-                // User is NOT logged in:
-                // Ensure login/register are visible in navbar
-                if (loginLink) loginLink.classList.remove('hidden');
-                if (registerLink) registerLink.classList.remove('hidden');
-
-                // Hide welcome message and logout button in navbar
-                if (welcomeUser) welcomeUser.classList.add('hidden');
-                if (logoutButton) logoutButton.classList.add('hidden');
-
-                // Ensure 'Get Started' button is visible in hero section
-                if (getStartedButton) getStartedButton.classList.remove('hidden');
-
-                // Ensure 'Support Us' button is visible
-                if (supportUsButton) supportUsButton.classList.remove('hidden');
             }
+
+            // Initial UI update on page load
+            updateUI();
 
             // Add logout functionality
-            if (logoutButton) {
-                logoutButton.addEventListener('click', function() {
-                    localStorage.removeItem('user'); // Clear the user session
-                    window.location.href = 'index.html'; // Redirect to update UI
+            const allLogoutButtons = [logoutButtonDesktop, logoutButtonMobile];
+            allLogoutButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', function() {
+                        localStorage.removeItem('user'); // Clear the user session
+                        updateUI(); // Update UI immediately after logout
+                        // Close mobile menu if open after logout
+                        mobileMenuPanel.classList.remove('open');
+                        mobileMenuOverlay.classList.remove('open');
+                        document.body.style.overflow = 'auto'; // Re-enable scrolling
+                        window.location.href = 'index.html'; // Redirect to refresh UI
+                    });
+                }
+            });
+
+            // Mobile menu toggle functionality
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenuPanel.classList.add('open');
+                    mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
                 });
             }
+
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    mobileMenuPanel.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto'; // Re-enable scrolling
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    mobileMenuPanel.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto'; // Re-enable scrolling
+                });
+            }
+
+            // Links within mobile menu should also close the menu
+            const mobileMenuLinks = mobileMenuPanel.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenuPanel.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+
+            // Placeholder links for future connection
+            if (likedVideosLinkMobile) likedVideosLinkMobile.href = "explore.html"; // Link to explore for now
+            if (uploadOptionMobile) uploadOptionMobile.href = "#"; // Placeholder for future upload page
+            if (faqLinkMobile) faqLinkMobile.href = "#"; // Placeholder for future FAQ page
+            if (contactSupportLinkMobile) contactSupportLinkMobile.href = "#"; // Placeholder for future Contact page
         });
     </script>
     <script src="assets/js/main.js"></script> 
