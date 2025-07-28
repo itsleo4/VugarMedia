@@ -43,7 +43,6 @@
             
             <!-- Desktop Navigation -->
             <div id="authLinks" class="hidden md:flex items-center space-x-6">
-                <!-- FIX: Changed href from '#' to 'explore.html' -->
                 <a href="explore.html" class="text-gray-300 hover:text-white transition">Explore</a>
                 <a href="membership.html" class="text-gray-300 hover:text-white transition">Membership</a>
                 <a href="#" class="text-gray-300 hover:text-white transition">About</a>
@@ -178,7 +177,8 @@
             </div>
             
             <div class="text-center mt-10">
-                <a href="#" class="inline-flex items-center text-primary hover:text-secondary font-medium">
+                <!-- FIX: Changed href from '#' to 'explore.html' for "View More Content" -->
+                <a href="explore.html" class="inline-flex items-center text-primary hover:text-secondary font-medium">
                     View More Content <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>
@@ -276,9 +276,11 @@
                 if (logoutButton) logoutButton.classList.remove('hidden');
 
                 // Hide 'Get Started' button in hero section
+                // This ensures it's hidden when a user is logged in
                 if (getStartedButton) getStartedButton.classList.add('hidden');
 
-                // Ensure 'Support Us' button is visible (it's always visible by default, but good for explicit control)
+                // Ensure 'Support Us' button is visible and remains eye-catching
+                // It's already styled to be eye-catching by default.
                 if (supportUsButton) supportUsButton.classList.remove('hidden');
 
             } else {
@@ -294,7 +296,7 @@
                 // Ensure 'Get Started' button is visible in hero section
                 if (getStartedButton) getStartedButton.classList.remove('hidden');
 
-                // Ensure 'Support Us' button is visible (it's always visible by default)
+                // Ensure 'Support Us' button is visible
                 if (supportUsButton) supportUsButton.classList.remove('hidden');
             }
 
@@ -302,8 +304,6 @@
             if (logoutButton) {
                 logoutButton.addEventListener('click', function() {
                     localStorage.removeItem('user'); // Clear the user session
-                    // For a completely fresh start during testing, you might clear all registered users:
-                    // localStorage.removeItem('users'); 
                     window.location.href = 'index.html'; // Redirect to update UI
                 });
             }
