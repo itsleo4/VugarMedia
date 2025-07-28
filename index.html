@@ -414,45 +414,11 @@
     <section class="py-12 bg-gray-900/50">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
-                Find Content That Matches Your Mood
+                Find Your Mood
             </h2>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Feeling Lonely -->
-                <a href="lonely.html" class="mood-card">
-                    <span class="emoji">😔</span>
-                    <span class="mood-title">Feeling Lonely</span>
-                </a>
-                
-                <!-- Need Something Wild -->
-                <a href="wild.html" class="mood-card">
-                    <span class="emoji">🔥</span>
-                    <span class="mood-title">Need Something Wild</span>
-                </a>
-                
-                <!-- Romantic & Soft -->
-                <a href="romantic.html" class="mood-card">
-                    <span class="emoji">💕</span>
-                    <span class="mood-title">Romantic & Soft</span>
-                </a>
-                
-                <!-- Fantasies & Kinks -->
-                <a href="kinks.html" class="mood-card">
-                    <span class="emoji">😈</span>
-                    <span class="mood-title">Fantasies & Kinks</span>
-                </a>
-                
-                <!-- Shemale / Trap -->
-                <a href="shemale.html" class="mood-card">
-                    <span class="emoji">⚧️</span>
-                    <span class="mood-title">Shemale / Trap</span>
-                </a>
-                
-                <!-- Elves, Hentai & Magic -->
-                <a href="fantasy.html" class="mood-card">
-                    <span class="emoji">✨</span>
-                    <span class="mood-title">Elves, Hentai & Magic</span>
-                </a>
+            <div id="moodCategoriesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Mood cards will be dynamically loaded here by JavaScript -->
             </div>
         </div>
     </section>
@@ -556,6 +522,33 @@
             
             // Hero section buttons
             const getStartedButton = document.getElementById('getStartedButton');
+
+            // Mood Category Data
+            const moodCategories = [
+                { name: "Feeling Lonely", emoji: "😔", link: "lonely.html" },
+                { name: "Need Something Wild", emoji: "🔥", link: "wild.html" },
+                { name: "Romantic & Soft", emoji: "💕", link: "romantic.html" },
+                { name: "Fantasies & Kinks", emoji: "😈", link: "kinks.html" },
+                { name: "Shemale / Trap", emoji: "⚧️", link: "shemale.html" },
+                { name: "Elves, Hentai & Magic", emoji: "✨", link: "fantasy.html" }
+            ];
+
+            // Function to render mood categories
+            function renderMoodCategories() {
+                const moodCategoriesGrid = document.getElementById('moodCategoriesGrid');
+                if (moodCategoriesGrid) {
+                    moodCategoriesGrid.innerHTML = ''; // Clear existing content
+                    moodCategories.forEach(mood => {
+                        const moodCard = `
+                            <a href="${mood.link}" class="mood-card block cursor-pointer">
+                                <span class="emoji">${mood.emoji}</span>
+                                <span class="mood-title">${mood.name}</span>
+                            </a>
+                        `;
+                        moodCategoriesGrid.insertAdjacentHTML('beforeend', moodCard);
+                    });
+                }
+            }
 
             // Popular Categories Data (from previous index.html)
             const categories = [
@@ -699,6 +692,7 @@
             }
 
             // Initial rendering and UI update
+            renderMoodCategories();
             renderPopularCategories();
             updateUI();
         });

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wild Mood | VugarMedia</title>
-    <meta name="description" content="Discover wild and intense video content on VugarMedia">
+    <title>Wild Content | VugarMedia</title>
+    <meta name="description" content="Unleash your wildest fantasies with our most intense content">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,17 +13,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6d28d9',
-                        secondary: '#9333ea',
+                        wildRed: '#e00000',
+                        wildGlow: '#ff4500',
                         dark: '#0f172a',
-                        light: '#f8fafc',
-                        donateRed: '#ef4444',
-                        vugarPurple: '#6d28d9', 
-                        mediaWhite: '#f8fafc', 
-                        
-                        // Custom accent for Wild page
-                        wildAccent: '#e00000', // Vibrant Red for a wild feel
-                        wildGlow: '#ff4500', // Orange-Red for glow
+                        light: '#f8fafc'
                     }
                 }
             }
@@ -35,360 +28,136 @@
     
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); /* Consistent with index.html */
+            background: linear-gradient(135deg, #0f172a 0%, #1a0a0a 100%);
             font-family: 'Inter', sans-serif;
-            color: var(--tw-colors-light);
+            color: #f8fafc;
         }
         
-        /* Consistent VugarMedia Logo Styling */
-        .vugarmedia-logo {
-            font-size: 1.5rem; 
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            line-height: 1; 
-        }
-
-        .vugarmedia-logo .vugar {
-            color: var(--tw-colors-vugarPurple); 
-        }
-
-        .vugarmedia-logo .media {
-            color: var(--tw-colors-mediaWhite); 
-            margin-left: 0.15em; 
-        }
-
-        /* Video Card Styling (Consistent with explore.html) */
         .video-card {
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(10px);
-            border-radius: 0.75rem; 
-            border: 1px solid var(--tw-colors-gray-700); 
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 69, 0, 0.3);
         }
         
         .video-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(224, 0, 0, 0.5); /* Wild accent shadow */
-            border-color: var(--tw-colors-wildAccent); /* Wild accent border on hover */
+            box-shadow: 0 10px 25px rgba(224, 0, 0, 0.5);
+            border-color: var(--tw-colors-wildRed);
         }
         
-        .video-thumbnail {
-            position: relative;
-            overflow: hidden;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            border-radius: 0.75rem 0.75rem 0 0; 
+        .like-button.liked, .save-button.saved {
+            color: #ef4444;
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         
-        .video-thumbnail img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .view-count {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
         }
         
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 50%;
+        .pagination {
             display: flex;
-            align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            margin-top: 2rem;
         }
         
-        .play-button:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%) scale(1.1);
+        .pagination a {
+            color: white;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 4px;
+            background: rgba(255, 69, 0, 0.3);
+            transition: all 0.3s;
         }
         
-        .video-embed {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            overflow: hidden;
+        .pagination a:hover, .pagination a.active {
+            background: var(--tw-colors-wildRed);
         }
         
-        .video-embed iframe {
-            position: absolute;
+        .video-player-container {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
-            border-radius: 0.5rem; 
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
-
-        /* Modal specific styles */
-        #videoModal {
-            transition: opacity 0.3s ease-in-out;
-        }
-        #videoModal.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Profile Dropdown & Mobile Menu Styles (Consistent with index.html) */
-        .profile-dropdown { position: relative; }
-        .profile-dropdown-content {
-            position: absolute; top: 100%; right: 0; background-color: var(--tw-colors-dark);
-            border: 1px solid var(--tw-colors-gray-700); border-radius: 0.5rem; padding: 1rem;
-            min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 100;
-            display: none; flex-direction: column; gap: 0.5rem;
-        }
-        .profile-dropdown-content.show { display: flex; }
-        .profile-dropdown-item {
-            display: flex; align-items: center; padding: 0.5rem 0.75rem; color: #ccc;
-            text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease;
-            border-radius: 0.25rem;
-        }
-        .profile-dropdown-item:hover { background-color: rgba(255,255,255,0.05); color: #fff; }
-        .profile-dropdown-item i { width: 1.5rem; text-align: center; margin-right: 0.5rem; color: var(--tw-colors-primary); }
-        .profile-dropdown-item.logout-btn { color: #ef4444; }
-        .profile-dropdown-item.logout-btn i { color: #ef4444; }
-        .profile-dropdown-item.donate-btn {
-            background: linear-gradient(45deg, var(--tw-colors-donateRed), #ff7f50); color: white;
-            font-weight: bold; box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3); margin-top: 0.5rem;
-            display: flex; justify-content: center;
-        }
-        .profile-dropdown-item.donate-btn:hover {
-            transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
-            background: linear-gradient(45deg, #ff7f50, var(--tw-colors-donateRed)); color: white;
-        }
-        .profile-dropdown-item.donate-btn i { color: white; }
-
-        .mobile-menu-panel { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
-        .mobile-menu-panel.open { transform: translateX(0); }
-        .mobile-menu-overlay { background-color: rgba(0, 0, 0, 0.7); transition: opacity 0.3s ease-in-out; opacity: 0; pointer-events: none; }
-        .mobile-menu-overlay.open { opacity: 1; pointer-events: auto; }
-        .mobile-menu-item { display: flex; align-items: center; padding: 0.75rem 0; color: #ccc; transition: color 0.2s ease; text-decoration: none; }
-        .mobile-menu-item:hover { color: #fff; }
-        .mobile-menu-item i { width: 2rem; text-align: center; margin-right: 0.75rem; color: var(--tw-colors-primary); }
-        .mobile-menu-item.logout-btn { color: #ef4444; }
-        .mobile-menu-item.logout-btn i { color: #ef4444; }
-        .mobile-menu-item.donate-btn {
-            background: linear-gradient(45deg, var(--tw-colors-donateRed), #ff7f50); color: white;
-            padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); margin-top: 1rem;
-            transition: all 0.2s ease-in-out; display: flex; justify-content: center;
-        }
-        .mobile-menu-item.donate-btn:hover {
-            transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6); color: white;
-        }
-        .mobile-menu-item.donate-btn i { color: white; }
-
-        /* Navigation Highlight for current page */
-        .nav-link-wild {
+        
+        .video-player {
+            width: 80%;
+            max-width: 1200px;
             position: relative;
-            color: var(--tw-colors-wildAccent) !important; /* Force wild accent color */
-            font-weight: bold !important;
         }
-        .nav-link-wild::after {
-            content: '';
+        
+        .close-player {
             position: absolute;
-            bottom: -5px; /* Adjust as needed */
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--tw-colors-wildAccent);
-            box-shadow: 0 0 8px rgba(224, 0, 0, 0.6); /* Wild accent glow */
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body class="antialiased">
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="vugarmedia-logo">
-                    <span class="vugar">Vugar</span><span class="media">Media</span>
-                </div>
+            <a href="index.html" class="text-2xl font-bold">
+                <span class="text-purple-600">Vugar</span><span class="text-white">Media</span>
             </a>
             
-            <!-- Desktop Navigation -->
-            <div id="desktopNav" class="hidden md:flex items-center space-x-6">
-                <!-- Home button with icon -->
-                <a href="index.html" class="text-gray-300 hover:text-white transition font-medium flex items-center">
-                    <i class="fas fa-home mr-2"></i>Home
-                </a>
-                <a href="explore.html" class="text-gray-300 hover:text-white transition font-medium">Explore</a>
-                <a href="membership.html" class="text-gray-300 hover:text-white transition font-medium">Membership</a>
-                <a href="wild.html" class="nav-link-wild font-medium">Wild</a> <!-- Highlighted -->
-                <a href="romantic.html" class="text-gray-300 hover:text-white transition font-medium">Romantic</a>
-                <a href="hardcore.html" class="text-gray-300 hover:text-white transition font-medium">Hardcore</a>
-                <a href="sensual.html" class="text-gray-300 hover:text-white transition font-medium">Sensual</a>
-                <a href="kinks.html" class="text-gray-300 hover:text-white transition font-medium">Kinks</a>
-                <a href="shemale.html" class="text-gray-300 hover:text-white transition font-medium">Shemale / Trap</a>
-                <a href="fantasy.html" class="text-gray-300 hover:text-white transition font-medium">Fantasy</a>
-                <a href="lonely.html" class="text-gray-300 hover:text-white transition font-medium">Lonely</a>
-                <a href="#" class="text-gray-300 hover:text-white transition">About</a>
-                
-                <!-- Desktop Profile Dropdown -->
-                <div class="profile-dropdown relative">
-                    <button id="desktopProfileButton" class="text-gray-300 hover:text-white transition p-2 rounded-full">
-                        <i class="fas fa-user-circle text-2xl"></i>
-                    </button>
-                    <div id="desktopProfileDropdown" class="profile-dropdown-content">
-                        <a href="#" id="uploadOptionDesktop" class="profile-dropdown-item">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Upload</span>
-                        </a>
-                        <a href="donate.html" id="donateButtonDesktop" class="profile-dropdown-item donate-btn">
-                            <i class="fas fa-hand-holding-heart"></i>
-                            <span>Donate Us!</span>
-                        </a>
-                        <a href="#" id="accountSettingsLinkDesktop" class="profile-dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            <span>Account Settings</span>
-                        </a>
-                        <div id="desktopAuthOptions" class="flex flex-col gap-2">
-                            <a href="login.html" class="profile-dropdown-item">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <span>Login</span>
-                            </a>
-                            <a href="register.html" class="profile-dropdown-item">
-                                <i class="fas fa-user-plus"></i>
-                                <span>Register</span>
-                            </a>
-                        </div>
-                        <div id="desktopLoggedInOptions" class="flex flex-col gap-2 hidden">
-                            <span id="welcomeUserDesktop" class="profile-dropdown-item text-white font-semibold">
-                                <i class="fas fa-user-circle"></i>
-                                <span></span>
-                            </span>
-                            <a href="saved.html" id="savedVideosLinkDesktop" class="profile-dropdown-item">
-                                <i class="fas fa-bookmark"></i>
-                                <span>Saved Videos</span>
-                            </a>
-                            <button id="logoutButtonDesktop" class="profile-dropdown-item logout-btn">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-white">Home</a>
+                <a href="wild.html" class="text-wildRed font-bold">Wild</a>
+                <a href="romantic.html" class="text-gray-300 hover:text-white">Romantic</a>
+                <a href="hardcore.html" class="text-gray-300 hover:text-white">Hardcore</a>
+                <a href="sensual.html" class="text-gray-300 hover:text-white">Sensual</a>
+                <a href="login.html" class="text-gray-300 hover:text-white">Login</a>
             </div>
             
-            <!-- Mobile Profile Button -->
-            <button id="mobileMenuButton" class="md:hidden text-gray-300 hover:text-white">
-                <i class="fas fa-user-circle text-2xl"></i>
+            <button class="md:hidden text-gray-300 hover:text-white">
+                <i class="fas fa-bars text-2xl"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 z-40 hidden"></div>
-
-    <!-- Mobile Menu Panel -->
-    <div id="mobileMenuPanel" class="mobile-menu-panel fixed top-0 right-0 h-full w-64 bg-dark z-50 p-6 flex flex-col">
-        <div class="flex justify-between items-center mb-8">
-            <div class="vugarmedia-logo text-xl">
-                <span class="vugar">Vugar</span><span class="media">Media</span>
-            </div>
-            <button id="closeMobileMenuButton" class="text-gray-400 hover:text-white text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="flex flex-col space-y-4 flex-grow">
-            <!-- Home link in mobile menu -->
-            <a href="index.html" class="mobile-menu-item">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="explore.html" class="mobile-menu-item">
-                <i class="fas fa-compass"></i>
-                <span>Explore</span>
-            </a>
-            <a href="membership.html" class="mobile-menu-item">
-                <i class="fas fa-star"></i>
-                <span>Membership</span>
-            </a>
-            <a href="wild.html" class="mobile-menu-item text-wildAccent font-bold">
-                <i class="fas fa-fire"></i>
-                <span>Wild</span> <!-- Highlighted -->
-            </a>
-            <a href="romantic.html" class="mobile-menu-item">
-                <i class="fas fa-heart"></i>
-                <span>Romantic</span>
-            </a>
-            <a href="hardcore.html" class="mobile-menu-item">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Hardcore</span>
-            </a>
-            <a href="sensual.html" class="mobile-menu-item">
-                <i class="fas fa-moon"></i>
-                <span>Sensual</span>
-            </a>
-            <a href="kinks.html" class="mobile-menu-item">
-                <i class="fas fa-mask"></i>
-                <span>Kinks</span>
-            </a>
-            <a href="shemale.html" class="mobile-menu-item">
-                <i class="fas fa-transgender-alt"></i>
-                <span>Shemale / Trap</span>
-            </a>
-            <a href="fantasy.html" class="mobile-menu-item">
-                <i class="fas fa-dragon"></i>
-                <span>Fantasy</span>
-            </a>
-            <a href="lonely.html" class="mobile-menu-item">
-                <i class="fas fa-cloud"></i>
-                <span>Lonely</span>
-            </a>
-            <a href="#" class="mobile-menu-item">
-                <i class="fas fa-info-circle"></i>
-                <span>About</span>
-            </a>
-
-            <!-- Always visible options in mobile menu -->
-            <a href="#" id="uploadOptionMobile" class="mobile-menu-item">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>Upload</span>
-            </a>
-            <a href="donate.html" id="donateButtonMobile" class="mobile-menu-item donate-btn">
-                <i class="fas fa-hand-holding-heart"></i>
-                <span>Donate Us!</span>
-            </a>
-            <a href="#" id="accountSettingsLinkMobile" class="mobile-menu-item">
-                <i class="fas fa-cog"></i>
-                <span>Account Settings</span>
-            </a>
-
-            <!-- Dynamic Auth/Profile Options -->
-            <div id="mobileAuthOptions" class="flex flex-col space-y-4">
-                <a href="login.html" id="logInLinkMobile" class="mobile-menu-item">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Login</span>
-                </a>
-                <a href="register.html" id="signUpLinkMobile" class="mobile-menu-item">
-                    <i class="fas fa-user-plus"></i>
-                    <span>Register</span>
-                </a>
-            </div>
-
-            <div id="mobileLoggedInOptions" class="flex flex-col space-y-4 hidden">
-                <span id="welcomeUserMobile" class="mobile-menu-item text-white font-semibold">
-                    <i class="fas fa-user-circle"></i>
-                    <span></span>
-                </span>
-                <a href="saved.html" id="savedVideosLinkMobile" class="mobile-menu-item">
-                    <i class="fas fa-bookmark"></i>
-                    <span>Saved Videos</span>
-                </a>
-                <button id="logoutButtonMobile" class="mobile-menu-item logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </button>
+    <!-- Video Player Modal -->
+    <div class="video-player-container" id="videoPlayerContainer">
+        <div class="video-player">
+            <span class="close-player" id="closePlayer">&times;</span>
+            <iframe id="mainVideoPlayer" class="w-full aspect-video" frameborder="0" allowfullscreen></iframe>
+            <div class="mt-4">
+                <h2 id="videoTitle" class="text-2xl font-bold"></h2>
+                <p id="videoDescription" class="text-gray-400 mt-2"></p>
+                <div class="video-actions">
+                    <button id="playerLikeBtn" class="like-button px-4 py-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                        <i class="far fa-heart mr-2"></i> Like
+                    </button>
+                    <button id="playerSaveBtn" class="save-button px-4 py-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                        <i class="far fa-bookmark mr-2"></i> Save
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -396,347 +165,458 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <div class="mb-8 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-wildAccent to-primary bg-clip-text text-transparent">
-                Get Wild Tonight 🔥
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-wildRed to-wildGlow bg-clip-text text-transparent">
+                WILDEST CONTENT 🔥
             </h1>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                Unleash your cravings. These videos are raw, rough, and totally uncensored. Viewer discretion is deliciously advised.
+                Raw, uncensored, and absolutely wild - these videos will push all your limits
             </p>
         </div>
 
-        <!-- Video Grid (Consistent with explore.html structure) -->
-        <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Video Card 1 - Replaced with iframe embed -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-embed">
-                    <iframe src="https://pornone.com/embed/278024825/" scrolling="no" allowfullscreen="true"></iframe>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Passionate Encounter</h3>
-                    <p class="text-sm text-gray-400">By WildStudios • 12:34</p>
-                </div>
-            </div>
-
-            <!-- Video Card 2 -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://example.com/wild-video2', 'Forbidden Pleasure')">
-                    <img src="https://placehold.co/600x400/e00000/ffffff?text=Forbidden+Pleasure" alt="Forbidden Pleasure">
-                    <div class="play-button">
-                        <i class="fas fa-play text-white text-xl"></i>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 18.3K</span>
-                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 890</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Forbidden Pleasure</h3>
-                    <p class="text-sm text-gray-400">By TabooDreams • 08:45</p>
-                </div>
-            </div>
-
-            <!-- Video Card 3 -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://example.com/wild-video3', 'Raw Desire')">
-                    <img src="https://placehold.co/600x400/e00000/ffffff?text=Raw+Desire" alt="Raw Desire">
-                    <div class="play-button">
-                        <i class="fas fa-play text-white text-xl"></i>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 32.1K</span>
-                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 2.4K</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Raw Desire</h3>
-                    <p class="text-sm text-gray-400">By PrimalFilms • 15:22</p>
-                </div>
-            </div>
-
-            <!-- Video Card 4 -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://example.com/wild-video4', 'Untamed Passion')">
-                    <img src="https://placehold.co/600x400/e00000/ffffff?text=Untamed+Passion" alt="Untamed Passion">
-                    <div class="play-button">
-                        <i class="fas fa-play text-white text-xl"></i>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 9.7K</span>
-                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 540</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Untamed Passion</h3>
-                    <p class="text-sm text-gray-400">By SavageCinema • 06:18</p>
-                </div>
-            </div>
-
-            <!-- Video Card 5 -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://example.com/wild-video5', 'Wild Encounters')">
-                    <img src="https://placehold.co/600x400/e00000/ffffff?text=Wild+Encounters" alt="Wild Encounters">
-                    <div class="play-button">
-                        <i class="fas fa-play text-white text-xl"></i>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 15.1K</span>
-                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 700</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Wild Encounters</h3>
-                    <p class="text-sm text-gray-400">By ExtremeVids • 10:05</p>
-                </div>
-            </div>
-
-            <!-- Video Card 6 -->
-            <div class="video-card rounded-xl overflow-hidden">
-                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://example.com/wild-video6', 'Feral Fantasies')">
-                    <img src="https://placehold.co/600x400/e00000/ffffff?text=Feral+Fantasies" alt="Feral Fantasies">
-                    <div class="play-button">
-                        <i class="fas fa-play text-white text-xl"></i>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 19.8K</span>
-                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 950</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold mb-1">Feral Fantasies</h3>
-                    <p class="text-sm text-gray-400">By UntamedProductions • 11:30</p>
-                </div>
-            </div>
+        <!-- Video Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="videoGrid">
+            <!-- Videos will be loaded here dynamically -->
         </div>
-        
-        <!-- Pagination (Consistent with explore.html) -->
-        <div class="flex justify-center mt-10">
-            <nav class="inline-flex rounded-md shadow">
-                <a href="#" class="px-3 py-2 rounded-l-md bg-gray-800 text-gray-300 hover:bg-gray-700">
-                    <i class="fas fa-chevron-left"></i>
-                </a>
-                <a href="#" class="px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">1</a>
-                <a href="#" class="px-4 py-2 bg-primary text-white border-l border-gray-700">2</a>
-                <a href="#" class="px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">3</a>
-                <a href="#" class="px-3 py-2 rounded-r-md bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            </nav>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination links will be generated here -->
         </div>
     </main>
 
-    <!-- Video Modal (Consistent with explore.html) -->
-    <div id="videoModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden">
-        <div class="relative w-full max-w-4xl">
-            <button onclick="closeVideoModal()" class="absolute -top-10 right-0 text-white hover:text-primary text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="video-embed rounded-lg overflow-hidden">
-                <iframe id="videoFrame" src="" allowfullscreen></iframe>
+    <!-- Footer -->
+    <footer class="bg-gray-900/80 border-t border-gray-800 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="text-gray-400 hover:text-white">Terms</a>
+                <a href="#" class="text-gray-400 hover:text-white">Privacy</a>
+                <a href="#" class="text-gray-400 hover:text-white">Contact</a>
             </div>
-            <div class="mt-4 flex justify-between items-center">
-                <h3 id="videoTitle" class="text-xl font-bold text-white"></h3>
-                <div class="flex space-x-3">
-                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
-                        <i class="fas fa-bookmark"></i>
-                    </button>
-                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
-                        <i class="fas fa-share"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer (Consistent with index.html) -->
-    <footer class="bg-gray-900/80 border-t border-gray-800 py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-lg font-bold mb-4 flex items-center">
-                        <div class="vugarmedia-logo text-lg">
-                            <span class="vugar">Vugar</span><span class="media">Media</span>
-                        </div>
-                    </h3>
-                    <p class="text-gray-400 text-sm">
-                        Premium video sharing platform for exclusive content.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">Navigation</h4>
-                    <ul class="space-y-2">
-                        <li><a href="index.html" class="text-gray-400 hover:text-white transition">Home</a></li>
-                        <li><a href="explore.html" class="text-gray-400 hover:text-white transition">Explore</a></li>
-                        <li><a href="membership.html" class="text-gray-400 hover:text-white transition">Membership</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">Legal</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">Connect</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
-                        <li><a href="https://t.me/+Xa9CQA1GNS43MDM1" target="_blank" class="text-gray-400 hover:text-white transition">Telegram</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-                <p>© 2023 VugarMedia. All rights reserved.</p>
-            </div>
+            <p class="text-gray-500 text-sm">© 2023 VugarMedia. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // Video modal functions (Copied from index.html/explore.html)
-        function openVideoModal(url, title) {
-            document.getElementById('videoFrame').src = url;
-            document.getElementById('videoTitle').textContent = title;
-            document.getElementById('videoModal').classList.remove('hidden');
+        // Video data - in a real app, this would come from a database via PHP
+        const allVideos = [
+            {
+                id: 1,
+                title: "🔥 Shrine Maiden's Cum-Filled Ritual",
+                description: "Her innocent look hides wild desires",
+                embedUrl: "https://javtiful.com/embed/6b52dab048d5a58c2838",
+                views: 24700000,
+                likes: 1800000,
+                saved: false
+            },
+            {
+                id: 2,
+                title: "🌸 Tsumugi's Adult Initiation",
+                description: "Innocent 18yo's first wild experience",
+                embedUrl: "https://javtiful.com/embed/eb65191a5f34a1fbec95",
+                views: 18300000,
+                likes: 1200000,
+                saved: false
+            },
+            {
+                id: 3,
+                title: "📣 Cheerleader Yuna's Wild Ride",
+                description: "Perfect body put to the ultimate test",
+                embedUrl: "https://javtiful.com/embed/6880ce02358842495e87",
+                views: 32100000,
+                likes: 2400000,
+                saved: false
+            },
+            {
+                id: 4,
+                title: "🤍 G-Cup Beauty's Pale Perfection",
+                description: "Junior's massive assets on full display",
+                embedUrl: "https://javtiful.com/embed/52e83389854ba6a21471",
+                views: 27500000,
+                likes: 1900000,
+                saved: false
+            },
+            {
+                id: 5,
+                title: "👑 Goddess' 7P Urinal Project",
+                description: "Long-awaited extreme gangbang",
+                embedUrl: "https://javtiful.com/embed/88f11d871e8dca5f642f",
+                views: 45200000,
+                likes: 3100000,
+                saved: false
+            },
+            {
+                id: 6,
+                title: "💋 Serious Girl's Wild Mouth Skills",
+                description: "Looks can be deceiving",
+                embedUrl: "https://javtiful.com/embed/badbce4612c58b42a739",
+                views: 19600000,
+                likes: 1300000,
+                saved: false
+            },
+            {
+                id: 7,
+                title: "🤫 Face Reveal For Secret Desires",
+                description: "What she wouldn't show before",
+                embedUrl: "https://javtiful.com/embed/83887b380d916b41c4b0",
+                views: 22400000,
+                likes: 1500000,
+                saved: false
+            },
+            {
+                id: 8,
+                title: "🍒 Big-Breasted Beauty On Camera",
+                description: "Persuaded to cum for the world",
+                embedUrl: "https://javtiful.com/embed/004b204dfe02c5e64b7d",
+                views: 28900000,
+                likes: 2000000,
+                saved: false
+            },
+            {
+                id: 9,
+                title: "💦 Daily Creampie Confession",
+                description: "Her boyfriend's special routine",
+                embedUrl: "https://javtiful.com/embed/b6d0024fb20443927ad0",
+                views: 36700000,
+                likes: 2600000,
+                saved: false
+            },
+            {
+                id: 10,
+                title: "🥵 Tall Beauty's Creampie Obsession",
+                description: "20yo with hidden perversions",
+                embedUrl: "https://javtiful.com/embed/31fcaad1cb77d7d76b8c",
+                views: 41300000,
+                likes: 2900000,
+                saved: false
+            },
+            {
+                id: 11,
+                title: "💸 Politician's Doll-Faced Plaything",
+                description: "The dark reality of exploitation",
+                embedUrl: "https://javtiful.com/embed/d8eed35eba030fb6b912",
+                views: 29500000,
+                likes: 2100000,
+                saved: false
+            },
+            {
+                id: 12,
+                title: "⏰ Boss's Overtime Orgasm Control",
+                description: "Young wife's workplace torment",
+                embedUrl: "https://javtiful.com/embed/f45f418e605289d3ea25",
+                views: 33800000,
+                likes: 2300000,
+                saved: false
+            },
+            {
+                id: 13,
+                title: "💰 Soggy Rich Sex With Mature Babe",
+                description: "Experience comes with age",
+                embedUrl: "https://javtiful.com/embed/8449512dbd2725721a30",
+                views: 25100000,
+                likes: 1700000,
+                saved: false
+            },
+            {
+                id: 14,
+                title: "🌟 Idol's First Creampie Climax",
+                description: "18yo's tight vagina overwhelmed",
+                embedUrl: "https://javtiful.com/embed/3ca3da9f76e04d608d7d",
+                views: 38200000,
+                likes: 2700000,
+                saved: false
+            },
+            {
+                id: 15,
+                title: "🍑 Big Ass Idol's Lewd Secrets",
+                description: "Chapter 2 of her hidden desires",
+                embedUrl: "https://javtiful.com/embed/7f4bf37a5771ee9f818b",
+                views: 31600000,
+                likes: 2200000,
+                saved: false
+            }
+        ];
+
+        // User state - in a real app, this would come from PHP session
+        let isLoggedIn = false; // Change to true when user logs in
+
+        // Pagination variables
+        const videosPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(allVideos.length / videosPerPage);
+
+        // DOM elements
+        const videoGrid = document.getElementById('videoGrid');
+        const pagination = document.getElementById('pagination');
+        const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+        const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoDescription = document.getElementById('videoDescription');
+        const closePlayer = document.getElementById('closePlayer');
+        const playerLikeBtn = document.getElementById('playerLikeBtn');
+        const playerSaveBtn = document.getElementById('playerSaveBtn');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVideos(currentPage);
+            setupPagination();
+            
+            // Check login status from session (in a real app)
+            // This would be done via PHP in a real implementation
+            // isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        });
+
+        // Load videos for the current page
+        function loadVideos(page) {
+            videoGrid.innerHTML = '';
+            const startIndex = (page - 1) * videosPerPage;
+            const endIndex = Math.min(startIndex + videosPerPage, allVideos.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const video = allVideos[i];
+                const videoCard = createVideoCard(video);
+                videoGrid.appendChild(videoCard);
+            }
+        }
+
+        // Create a video card element
+        function createVideoCard(video) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.dataset.id = video.id;
+            
+            const viewsFormatted = formatNumber(video.views);
+            const likesFormatted = formatNumber(video.likes);
+            
+            card.innerHTML = `
+                <div class="relative overflow-hidden rounded-t-lg" style="padding-bottom: 56.25%;">
+                    <img src="https://via.placeholder.com/640x360" alt="Thumbnail" class="absolute top-0 left-0 w-full h-full object-cover cursor-pointer play-video">
+                    <div class="absolute inset-0 flex items-center justify-center play-button">
+                        <i class="fas fa-play text-4xl text-white bg-black bg-opacity-50 rounded-full p-4"></i>
+                    </div>
+                    <div class="absolute bottom-2 left-2 flex space-x-2">
+                        <span class="view-count text-white"><i class="fas fa-eye mr-1"></i> ${viewsFormatted}</span>
+                        <span class="view-count text-white"><i class="fas fa-heart mr-1"></i> ${likesFormatted}</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1">${video.title}</h3>
+                    <p class="text-sm text-gray-400 mb-3">${video.description}</p>
+                    <div class="flex space-x-2">
+                        <button class="like-button px-3 py-1 rounded-full bg-gray-800 hover:bg-gray-700 transition" data-id="${video.id}">
+                            <i class="far fa-heart mr-1"></i> Like
+                        </button>
+                        <button class="save-button px-3 py-1 rounded-full bg-gray-800 hover:bg-gray-700 transition" data-id="${video.id}">
+                            <i class="far fa-bookmark mr-1"></i> Save
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add click event to play video
+            const playBtn = card.querySelector('.play-video');
+            const playIcon = card.querySelector('.play-button');
+            playBtn.addEventListener('click', () => openVideoPlayer(video));
+            playIcon.addEventListener('click', () => openVideoPlayer(video));
+            
+            // Add like/save button events
+            const likeBtn = card.querySelector('.like-button');
+            const saveBtn = card.querySelector('.save-button');
+            
+            likeBtn.addEventListener('click', function() {
+                handleLike(this, video.id);
+            });
+            
+            saveBtn.addEventListener('click', function() {
+                handleSave(this, video.id);
+            });
+            
+            return card;
+        }
+
+        // Format large numbers (1K, 1M, etc.)
+        function formatNumber(num) {
+            if (num >= 1000000000) {
+                return (num / 1000000000).toFixed(1) + 'B';
+            } else if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Setup pagination links
+        function setupPagination() {
+            pagination.innerHTML = '';
+            
+            // Previous button
+            if (currentPage > 1) {
+                const prevLink = document.createElement('a');
+                prevLink.href = '#';
+                prevLink.innerHTML = '&laquo;';
+                prevLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage--;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(prevLink);
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.textContent = i;
+                if (i === currentPage) {
+                    pageLink.classList.add('active');
+                }
+                pageLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(pageLink);
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                const nextLink = document.createElement('a');
+                nextLink.href = '#';
+                nextLink.innerHTML = '&raquo;';
+                nextLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage++;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(nextLink);
+            }
+        }
+
+        // Open video player with selected video
+        function openVideoPlayer(video) {
+            mainVideoPlayer.src = video.embedUrl;
+            videoTitle.textContent = video.title;
+            videoDescription.textContent = video.description;
+            
+            // Set up player buttons
+            playerLikeBtn.dataset.id = video.id;
+            playerSaveBtn.dataset.id = video.id;
+            
+            // Reset button states
+            playerLikeBtn.classList.remove('liked');
+            playerLikeBtn.querySelector('i').className = 'far fa-heart mr-2';
+            
+            playerSaveBtn.classList.remove('saved');
+            playerSaveBtn.querySelector('i').className = 'far fa-bookmark mr-2';
+            
+            // Show player
+            videoPlayerContainer.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
-        
-        function closeVideoModal() {
-            document.getElementById('videoFrame').src = '';
-            document.getElementById('videoModal').classList.add('hidden');
+
+        // Close video player
+        closePlayer.addEventListener('click', function() {
+            videoPlayerContainer.style.display = 'none';
+            mainVideoPlayer.src = '';
             document.body.style.overflow = 'auto';
+        });
+
+        // Handle like button click
+        function handleLike(button, videoId) {
+            if (!isLoggedIn) {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const video = allVideos.find(v => v.id === videoId);
+            const isLiked = button.classList.contains('liked');
+            const icon = button.querySelector('i');
+            
+            if (isLiked) {
+                // Unlike
+                button.classList.remove('liked');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                video.likes--;
+            } else {
+                // Like
+                button.classList.add('liked');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                video.likes++;
+            }
+            
+            // Update like count display
+            const likeCountElement = button.closest('.video-card').querySelector('.fa-heart').parentElement;
+            likeCountElement.textContent = formatNumber(video.likes);
+            
+            // In a real app, send this to the server via AJAX
+            // updateLikeStatus(videoId, !isLiked);
         }
-        
-        document.getElementById('videoModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeVideoModal();
+
+        // Handle save button click
+        function handleSave(button, videoId) {
+            if (!isLoggedIn) {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const video = allVideos.find(v => v.id === videoId);
+            const isSaved = button.classList.contains('saved');
+            const icon = button.querySelector('i');
+            
+            if (isSaved) {
+                // Unsave
+                button.classList.remove('saved');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                video.saved = false;
+            } else {
+                // Save
+                button.classList.add('saved');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                video.saved = true;
+            }
+            
+            // In a real app, send this to the server via AJAX
+            // updateSaveStatus(videoId, !isSaved);
+        }
+
+        // Player like button
+        playerLikeBtn.addEventListener('click', function() {
+            const videoId = parseInt(this.dataset.id);
+            handleLike(this, videoId);
+            
+            // Also update the corresponding card's like button
+            const cardLikeBtn = document.querySelector(`.video-card[data-id="${videoId}"] .like-button`);
+            if (cardLikeBtn) {
+                cardLikeBtn.classList.toggle('liked');
+                const icon = cardLikeBtn.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
             }
         });
 
-        // Profile dropdown and mobile menu functionality (Copied from index.html)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Desktop Profile Dropdown
-            const desktopProfileButton = document.getElementById('desktopProfileButton');
-            const desktopProfileDropdown = document.getElementById('desktopProfileDropdown');
-            const desktopAuthOptions = document.getElementById('desktopAuthOptions');
-            const desktopLoggedInOptions = document.getElementById('desktopLoggedInOptions');
-            const welcomeUserDesktop = document.getElementById('welcomeUserDesktop');
-            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
-
-            // Mobile Menu Elements
-            const mobileMenuButton = document.getElementById('mobileMenuButton');
-            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
-            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
-            const mobileAuthOptions = document.getElementById('mobileAuthOptions');
-            const mobileLoggedInOptions = document.getElementById('mobileLoggedInOptions');
-            const welcomeUserMobile = document.getElementById('welcomeUserMobile');
-            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
-
-            // Update UI based on login status
-            function updateUI() {
-                const user = JSON.parse(localStorage.getItem('user'));
-
-                // Desktop UI
-                if (user && user.loggedIn) {
-                    if (desktopAuthOptions) desktopAuthOptions.classList.add('hidden'); 
-                    if (desktopLoggedInOptions) desktopLoggedInOptions.classList.remove('hidden');
-                    if (welcomeUserDesktop) welcomeUserDesktop.querySelector('span').textContent = user.username;
-                } else {
-                    if (desktopAuthOptions) desktopAuthOptions.classList.remove('hidden');
-                    if (desktopLoggedInOptions) desktopLoggedInOptions.classList.add('hidden');
-                }
-
-                // Mobile UI
-                if (user && user.loggedIn) {
-                    if (mobileAuthOptions) mobileAuthOptions.classList.add('hidden');
-                    if (mobileLoggedInOptions) mobileLoggedInOptions.classList.remove('hidden');
-                    if (welcomeUserMobile) welcomeUserMobile.querySelector('span').textContent = user.username;
-                } else {
-                    if (mobileAuthOptions) mobileAuthOptions.classList.remove('hidden');
-                    if (mobileLoggedInOptions) mobileLoggedInOptions.classList.add('hidden');
-                }
+        // Player save button
+        playerSaveBtn.addEventListener('click', function() {
+            const videoId = parseInt(this.dataset.id);
+            handleSave(this, videoId);
+            
+            // Also update the corresponding card's save button
+            const cardSaveBtn = document.querySelector(`.video-card[data-id="${videoId}"] .save-button`);
+            if (cardSaveBtn) {
+                cardSaveBtn.classList.toggle('saved');
+                const icon = cardSaveBtn.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
             }
-
-            // Logout functionality
-            function logout() {
-                localStorage.removeItem('user');
-                updateUI();
-                // Close menus if open
-                if (desktopProfileDropdown) desktopProfileDropdown.classList.remove('show');
-                if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
-                if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
-                document.body.style.overflow = 'auto';
-                window.location.href = 'index.html'; // Redirect to homepage after logout
-            }
-
-            // Desktop Profile Dropdown Toggle
-            if (desktopProfileButton) {
-                desktopProfileButton.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (desktopProfileDropdown) {
-                        desktopProfileDropdown.classList.toggle('show');
-                    }
-                });
-            }
-
-            // Close desktop dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (desktopProfileDropdown && desktopProfileButton && !desktopProfileButton.contains(e.target) && !desktopProfileDropdown.contains(e.target)) {
-                    desktopProfileDropdown.classList.remove('show');
-                }
-            });
-
-            // Mobile Menu Toggle
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', function() {
-                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
-                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
-                    document.body.style.overflow = 'hidden';
-                });
-            }
-
-            // Close Mobile Menu
-            if (closeMobileMenuButton) {
-                closeMobileMenuButton.addEventListener('click', function() {
-                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
-                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
-                    document.body.style.overflow = 'auto';
-                });
-            }
-
-            // Close Mobile Menu when clicking overlay
-            if (mobileMenuOverlay) {
-                mobileMenuOverlay.addEventListener('click', function() {
-                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
-                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
-                    document.body.style.overflow = 'auto';
-                });
-            }
-
-            // Logout Buttons
-            if (logoutButtonDesktop) {
-                logoutButtonDesktop.addEventListener('click', logout);
-            }
-            if (logoutButtonMobile) {
-                logoutButtonMobile.addEventListener('click', logout);
-            }
-
-            // Initialize UI
-            updateUI();
         });
     </script>
 </body>
