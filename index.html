@@ -17,7 +17,10 @@
                         secondary: '#9333ea',
                         dark: '#0f172a',
                         light: '#f8fafc',
-                        accentYellow: '#facc15', /* Added for consistency with donate page */
+                        donateRed: '#ef4444',
+                        // Custom colors for the VugarMedia text logo (matching screenshot)
+                        vugarPurple: '#6d28d9', 
+                        mediaWhite: '#f8fafc', 
                     }
                 }
             }
@@ -27,10 +30,97 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Custom styles for mobile menu slide-in/out */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            font-family: 'Inter', sans-serif; /* Ensuring Inter font */
+        }
+        
+        /* Custom style for the VugarMedia text logo (matching screenshot) */
+        .vugarmedia-logo {
+            font-size: 1.5rem; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            line-height: 1; 
+        }
+
+        .vugarmedia-logo .vugar {
+            color: var(--tw-colors-vugarPurple); 
+        }
+
+        .vugarmedia-logo .media {
+            color: var(--tw-colors-mediaWhite); 
+            margin-left: 0.15em; 
+        }
+
+        /* Desktop Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        .profile-dropdown-content {
+            position: absolute;
+            top: 100%; 
+            right: 0;
+            background-color: var(--tw-colors-dark);
+            border: 1px solid var(--tw-colors-gray-700);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            z-index: 100;
+            display: none; 
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .profile-dropdown-content.show {
+            display: flex; 
+        }
+        .profile-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            color: #ccc;
+            text-decoration: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 0.25rem;
+        }
+        .profile-dropdown-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        .profile-dropdown-item i {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.5rem;
+            color: var(--tw-colors-primary);
+        }
+        .profile-dropdown-item.logout-btn {
+            color: #ef4444;
+        }
+        .profile-dropdown-item.logout-btn i {
+            color: #ef4444;
+        }
+        .profile-dropdown-item.donate-btn {
+            background: linear-gradient(45deg, var(--tw-colors-donateRed), #ff7f50);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+            margin-top: 0.5rem;
+            display: flex; 
+            justify-content: center; 
+        }
+        .profile-dropdown-item.donate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+            background: linear-gradient(45deg, #ff7f50, var(--tw-colors-donateRed)); 
+            color: white;
+        }
+        .profile-dropdown-item.donate-btn i {
+            color: white;
+        }
+
+        /* Mobile Menu styles */
         .mobile-menu-panel {
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
@@ -42,24 +132,140 @@
             background-color: rgba(0, 0, 0, 0.7);
             transition: opacity 0.3s ease-in-out;
             opacity: 0;
-            pointer-events: none; /* Allows clicks through when hidden */
+            pointer-events: none; 
         }
         .mobile-menu-overlay.open {
             opacity: 1;
-            pointer-events: auto; /* Blocks clicks when open */
+            pointer-events: auto; 
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0; 
+            color: #ccc; 
+            transition: color 0.2s ease;
+            text-decoration: none; 
+        }
+        .mobile-menu-item:hover {
+            color: #fff; 
+        }
+        .mobile-menu-item i {
+            width: 2rem; 
+            text-align: center;
+            margin-right: 0.75rem;
+            color: var(--tw-colors-primary); 
+        }
+        .mobile-menu-item.logout-btn {
+            color: #ef4444; 
+        }
+        .mobile-menu-item.logout-btn i {
+            color: #ef4444; 
+        }
+        .mobile-menu-item.donate-btn {
+            background: linear-gradient(45deg, var(--tw-colors-donateRed), #ff7f50); 
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            margin-top: 1rem; 
+            transition: all 0.2s ease-in-out;
+            display: flex; 
+            justify-content: center; 
+        }
+        .mobile-menu-item.donate-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            color: white; 
+        }
+        .mobile-menu-item.donate-btn i {
+            color: white; 
+        }
+
+        /* Mood Category Card Styling */
+        .mood-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--tw-colors-gray-700);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            min-height: 150px; /* Ensure cards have a minimum height */
+        }
+        .mood-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(109,40,217,0.5);
+            border-color: var(--tw-colors-primary);
+        }
+        .mood-card .emoji {
+            font-size: 3rem; /* Large emoji */
+            margin-bottom: 0.5rem;
+            line-height: 1; /* Prevent extra space around emoji */
+        }
+        .mood-card .mood-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Category Grid Styling (from previous index.html) */
+        .category-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--tw-colors-gray-700);
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(109,40,217,0.5);
+            border-color: var(--tw-colors-primary);
+        }
+        .category-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+        .category-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .category-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            padding: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            font-size: 1.125rem; /* text-lg */
         }
     </style>
 </head>
-<body class="bg-dark text-light font-sans antialiased">
+<body class="text-light font-sans antialiased">
     <!-- Navigation Bar -->
     <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-            <!-- Logo -->
+            <!-- Logo - Text-based VugarMedia -->
             <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-md bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                    <i class="fas fa-play text-white text-sm"></i>
+                <div class="vugarmedia-logo">
+                    <span class="vugar">Vugar</span><span class="media">Media</span>
                 </div>
-                <span class="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
             </a>
             
             <!-- Desktop Navigation -->
@@ -68,20 +274,58 @@
                 <a href="membership.html" class="text-gray-300 hover:text-white transition">Membership</a>
                 <a href="#" class="text-gray-300 hover:text-white transition">About</a>
                 
-                <div class="flex space-x-3 ml-4">
-                    <!-- Login/Register links (will be hidden when logged in) -->
-                    <a href="login.html" id="loginLinkDesktop" class="px-4 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition">Login</a>
-                    <a href="register.html" id="registerLinkDesktop" class="px-4 py-2 rounded-md bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 transition">Register</a>
+                <!-- Desktop Profile Dropdown -->
+                <div class="profile-dropdown relative">
+                    <button id="desktopProfileButton" class="text-gray-300 hover:text-white transition p-2 rounded-full">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </button>
+                    <div id="desktopProfileDropdown" class="profile-dropdown-content">
+                        <!-- Always visible options -->
+                        <a href="#" id="uploadOptionDesktop" class="profile-dropdown-item">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Upload</span>
+                        </a>
+                        <a href="donate.html" id="donateButtonDesktop" class="profile-dropdown-item donate-btn">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            <span>Donate Us!</span> <!-- Changed text -->
+                        </a>
+                        <a href="#" id="accountSettingsLinkDesktop" class="profile-dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Account Settings</span>
+                        </a>
 
-                    <!-- Logged-in elements (initially hidden) -->
-                    <span id="welcomeUserDesktop" class="text-white px-4 py-2 hidden"></span> 
-                    <button id="logoutButtonDesktop" class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition hidden">Logout</button>
+                        <!-- Dynamic content based on login status -->
+                        <div id="desktopAuthOptions" class="flex flex-col gap-2">
+                            <a href="login.html" class="profile-dropdown-item">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                            <a href="register.html" class="profile-dropdown-item">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Register</span>
+                            </a>
+                        </div>
+                        <div id="desktopLoggedInOptions" class="flex flex-col gap-2 hidden">
+                            <span id="welcomeUserDesktop" class="profile-dropdown-item text-white font-semibold">
+                                <i class="fas fa-user-circle"></i>
+                                <span></span>
+                            </span>
+                            <a href="saved.html" id="savedVideosLinkDesktop" class="profile-dropdown-item">
+                                <i class="fas fa-bookmark"></i>
+                                <span>Saved Videos</span>
+                            </a>
+                            <button id="logoutButtonDesktop" class="profile-dropdown-item logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Mobile Menu Button (Hamburger) -->
+            <!-- Mobile Profile Button -->
             <button id="mobileMenuButton" class="md:hidden text-gray-300 hover:text-white">
-                <i class="fas fa-bars text-xl"></i>
+                <i class="fas fa-user-circle text-2xl"></i>
             </button>
         </div>
     </nav>
@@ -89,50 +333,55 @@
     <!-- Mobile Menu Overlay -->
     <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 z-40 hidden"></div>
 
-    <!-- Mobile Menu Panel (Pornhub-style) -->
+    <!-- Mobile Menu Panel -->
     <div id="mobileMenuPanel" class="mobile-menu-panel fixed top-0 right-0 h-full w-64 bg-dark z-50 p-6 flex flex-col">
         <div class="flex justify-between items-center mb-8">
-            <!-- Logo in Mobile Menu -->
-            <img src="file_00000000528861f59ec1d1a67569dffe.jpg" alt="VugarMedia Logo" class="h-8 w-auto">
+            <div class="vugarmedia-logo text-xl">
+                <span class="vugar">Vugar</span><span class="media">Media</span>
+            </div>
             <button id="closeMobileMenuButton" class="text-gray-400 hover:text-white text-2xl">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <div class="flex flex-col space-y-4 flex-grow">
-            <!-- Auth Options (Dynamic) -->
-            <a href="register.html" id="signUpLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-user-plus text-xl w-6 text-center"></i>
-                <span>Sign Up</span>
+            <!-- Always visible options in mobile menu -->
+            <a href="#" id="uploadOptionMobile" class="mobile-menu-item">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Upload</span>
             </a>
-            <a href="login.html" id="logInLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-sign-in-alt text-xl w-6 text-center"></i>
-                <span>Log In</span>
+            <a href="donate.html" id="donateButtonMobile" class="mobile-menu-item donate-btn">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>Donate Us!</span> <!-- Changed text -->
             </a>
-            <a href="explore.html" id="likedVideosLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-heart text-xl w-6 text-center"></i>
-                <span>Liked Videos</span>
+            <a href="#" id="accountSettingsLinkMobile" class="mobile-menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Account Settings</span>
             </a>
-            <a href="#" id="uploadOptionMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-cloud-upload-alt text-xl w-6 text-center"></i>
-                <span>Upload (Optional)</span>
-            </a>
-            <a href="#" id="faqLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-question-circle text-xl w-6 text-center"></i>
-                <span>FAQ</span>
-            </a>
-            <a href="#" id="contactSupportLinkMobile" class="flex items-center space-x-3 text-gray-300 hover:text-white transition">
-                <i class="fas fa-headset text-xl w-6 text-center"></i>
-                <span>Contact Support</span>
-            </a>
-            
-            <div id="loggedInOptionsMobile" class="flex flex-col space-y-4 hidden mt-auto pt-4 border-t border-gray-700">
-                <span id="welcomeUserMobile" class="text-white font-semibold flex items-center space-x-3">
-                    <i class="fas fa-user-circle text-xl w-6 text-center"></i>
+
+            <!-- Dynamic Auth/Profile Options -->
+            <div id="mobileAuthOptions" class="flex flex-col space-y-4">
+                <a href="login.html" id="logInLinkMobile" class="mobile-menu-item">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+                <a href="register.html" id="signUpLinkMobile" class="mobile-menu-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register</span>
+                </a>
+            </div>
+
+            <div id="mobileLoggedInOptions" class="flex flex-col space-y-4 hidden">
+                <span id="welcomeUserMobile" class="mobile-menu-item text-white font-semibold">
+                    <i class="fas fa-user-circle"></i>
                     <span></span>
                 </span>
-                <button id="logoutButtonMobile" class="flex items-center space-x-3 text-red-500 hover:text-red-400 transition">
-                    <i class="fas fa-sign-out-alt text-xl w-6 text-center"></i>
+                <a href="saved.html" id="savedVideosLinkMobile" class="mobile-menu-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Saved Videos</span>
+                </a>
+                <button id="logoutButtonMobile" class="mobile-menu-item logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </button>
             </div>
@@ -156,105 +405,67 @@
                     <a href="register.html" id="getStartedButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition transform hover:scale-105">
                         Get Started <i class="fas fa-arrow-right ml-2"></i>
                     </a>
-                    <!-- 'Support Us' button - made more eye-catching and linked to donate.html -->
-                    <a href="donate.html" id="supportUsButton" class="px-8 py-3 rounded-md bg-yellow-500 text-dark font-bold hover:bg-yellow-400 transition transform hover:scale-105 shadow-lg shadow-yellow-500/30">
-                        Support Us <i class="fas fa-heart ml-2"></i>
-                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Video Preview Section -->
+    <!-- Mood-Based Category Section (NEW) -->
     <section class="py-12 bg-gray-900/50">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
-                Featured Content
+                Find Content That Matches Your Mood
             </h2>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Video Card 1 -->
-                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <a href="#" class="block">
-                        <div class="relative">
-                            <img src="assets/img/placeholder1.jpg" alt="Video preview" class="w-full h-48 object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 24.5K</span>
-                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 1.2K</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold mb-1">Premium Content Showcase</h3>
-                            <p class="text-sm text-gray-400">By CreatorName • 12:34</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <!-- Video Card 2 -->
-                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <a href="#" class="block">
-                        <div class="relative">
-                            <img src="assets/img/placeholder2.jpg" alt="Video preview" class="w-full h-48 object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 18.3K</span>
-                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 890</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold mb-1">Exclusive Member Video</h3>
-                            <p class="text-sm text-gray-400">By CreatorName • 8:45</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <!-- Video Card 3 -->
-                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <a href="#" class="block">
-                        <div class="relative">
-                            <img src="assets/img/placeholder3.jpg" alt="Video preview" class="w-full h-48 object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 32.1K</span>
-                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 2.4K</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold mb-1">Behind The Scenes</h3>
-                            <p class="text-sm text-gray-400">By CreatorName • 15:22</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <!-- Video Card 4 -->
-                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <a href="#" class="block">
-                        <div class="relative">
-                            <img src="assets/img/placeholder4.jpg" alt="Video preview" class="w-full h-48 object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 9.7K</span>
-                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 540</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold mb-1">Special Feature Preview</h3>
-                            <p class="text-sm text-gray-400">By CreatorName • 6:18</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="text-center mt-10">
-                <!-- FIX: Corrected href to explore.html -->
-                <a href="explore.html" class="inline-flex items-center text-primary hover:text-secondary font-medium">
-                    View More Content <i class="fas fa-arrow-right ml-2"></i>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feeling Lonely -->
+                <a href="lonely.html" class="mood-card">
+                    <span class="emoji">😔</span>
+                    <span class="mood-title">Feeling Lonely</span>
                 </a>
+                
+                <!-- Need Something Wild -->
+                <a href="wild.html" class="mood-card">
+                    <span class="emoji">🔥</span>
+                    <span class="mood-title">Need Something Wild</span>
+                </a>
+                
+                <!-- Romantic & Soft -->
+                <a href="romantic.html" class="mood-card">
+                    <span class="emoji">💕</span>
+                    <span class="mood-title">Romantic & Soft</span>
+                </a>
+                
+                <!-- Fantasies & Kinks -->
+                <a href="kinks.html" class="mood-card">
+                    <span class="emoji">😈</span>
+                    <span class="mood-title">Fantasies & Kinks</span>
+                </a>
+                
+                <!-- Shemale / Trap -->
+                <a href="shemale.html" class="mood-card">
+                    <span class="emoji">⚧️</span>
+                    <span class="mood-title">Shemale / Trap</span>
+                </a>
+                
+                <!-- Elves, Hentai & Magic -->
+                <a href="fantasy.html" class="mood-card">
+                    <span class="emoji">✨</span>
+                    <span class="mood-title">Elves, Hentai & Magic</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Categories Section (Existing) -->
+    <section class="py-12 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
+                Popular Categories
+            </h2>
+            
+            <div id="categoriesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <!-- Categories will be dynamically loaded here by JavaScript -->
             </div>
         </div>
     </section>
@@ -282,7 +493,10 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <h3 class="text-lg font-bold mb-4 flex items-center">
-                        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
+                        <!-- Footer Logo - Text-based VugarMedia -->
+                        <div class="vugarmedia-logo text-lg">
+                            <span class="vugar">Vugar</span><span class="media">Media</span>
+                        </div>
                     </h3>
                     <p class="text-gray-400 text-sm">
                         Premium video sharing platform for exclusive content.
@@ -322,138 +536,172 @@
     <!-- JavaScript for login/logout functionality and button visibility -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Desktop Navigation elements
-            const loginLinkDesktop = document.getElementById('loginLinkDesktop');
-            const registerLinkDesktop = document.getElementById('registerLinkDesktop');
+            // Desktop Profile Dropdown
+            const desktopProfileButton = document.getElementById('desktopProfileButton');
+            const desktopProfileDropdown = document.getElementById('desktopProfileDropdown');
+            const desktopAuthOptions = document.getElementById('desktopAuthOptions');
+            const desktopLoggedInOptions = document.getElementById('desktopLoggedInOptions');
             const welcomeUserDesktop = document.getElementById('welcomeUserDesktop');
             const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
 
-            // Mobile Navigation elements
+            // Mobile Menu Elements
             const mobileMenuButton = document.getElementById('mobileMenuButton');
             const mobileMenuPanel = document.getElementById('mobileMenuPanel');
             const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
             const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
-
-            const signUpLinkMobile = document.getElementById('signUpLinkMobile');
-            const logInLinkMobile = document.getElementById('logInLinkMobile');
-            const likedVideosLinkMobile = document.getElementById('likedVideosLinkMobile');
-            const uploadOptionMobile = document.getElementById('uploadOptionMobile');
-            const faqLinkMobile = document.getElementById('faqLinkMobile');
-            const contactSupportLinkMobile = document.getElementById('contactSupportLinkMobile');
-            const loggedInOptionsMobile = document.getElementById('loggedInOptionsMobile');
+            const mobileAuthOptions = document.getElementById('mobileAuthOptions');
+            const mobileLoggedInOptions = document.getElementById('mobileLoggedInOptions');
             const welcomeUserMobile = document.getElementById('welcomeUserMobile');
             const logoutButtonMobile = document.getElementById('logoutButtonMobile');
-
-
+            
             // Hero section buttons
             const getStartedButton = document.getElementById('getStartedButton');
-            const supportUsButton = document.getElementById('supportUsButton');
+
+            // Popular Categories Data (from previous index.html)
+            const categories = [
+                { name: "Anal", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Anal", slug: "anal" },
+                { name: "Asian", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=Asian", slug: "asian" },
+                { name: "Big Ass", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Big+Ass", slug: "big-ass" },
+                { name: "Blowjob", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Blowjob", slug: "blowjob" },
+                { name: "Brazzers", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Brazzers", slug: "brazzers" },
+                { name: "Creampie", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=Creampie", slug: "creampie" },
+                { name: "Deepthroat", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Deepthroat", slug: "deepthroat" },
+                { name: "Ebony", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Ebony", slug: "ebony" },
+                { name: "Family", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Family", slug: "family" },
+                { name: "Gangbang", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=Gangbang", slug: "gangbang" },
+                { name: "Hentai", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Hentai", slug: "hentai" },
+                { name: "Indian", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Indian", slug: "indian" },
+                { name: "Lesbian", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Lesbian", slug: "lesbian" },
+                { name: "Massage", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Massage", slug: "massage" },
+                { name: "Mature", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Mature", slug: "mature" },
+                { name: "Milf", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Milf", slug: "milf" },
+                { name: "Orgy", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=Orgy", slug: "orgy" },
+                { name: "Pornstar", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Pornstar", slug: "pornstar" },
+                { name: "Public", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Public", slug: "public" },
+                { name: "Reality", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Reality", slug: "reality" },
+                { name: "School", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=School", slug: "school" },
+                { name: "Solo", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Solo", slug: "solo" },
+                { name: "Threesome", thumbnail: "https://placehold.co/300x169/1e1b4b/ffffff?text=Threesome", slug: "threesome" },
+                { name: "Teen", thumbnail: "https://placehold.co/300x169/6d28d9/ffffff?text=Teen", slug: "teen" },
+                { name: "Transgender", thumbnail: "https://placehold.co/300x169/9333ea/ffffff?text=Transgender", slug: "transgender" },
+                { name: "Vintage", thumbnail: "https://placehold.co/300x169/0f172a/ffffff?text=Vintage", slug: "vintage" }
+            ];
+
+            // Function to render popular categories
+            function renderPopularCategories() {
+                const categoriesGrid = document.getElementById('categoriesGrid');
+                if (categoriesGrid) {
+                    categoriesGrid.innerHTML = ''; // Clear existing content
+                    categories.forEach(category => {
+                        // Link to category.html with slug as parameter
+                        const categoryCard = `
+                            <a href="category.html?slug=${category.slug}" class="category-card block cursor-pointer">
+                                <div class="category-thumbnail">
+                                    <img src="${category.thumbnail}" alt="${category.name} Category">
+                                    <div class="category-title">${category.name}</div>
+                                </div>
+                            </a>
+                        `;
+                        categoriesGrid.insertAdjacentHTML('beforeend', categoryCard);
+                    });
+                }
+            }
 
             // Function to update UI based on login status
             function updateUI() {
                 const user = JSON.parse(localStorage.getItem('user'));
 
-                // Desktop UI updates
+                // Desktop UI
                 if (user && user.loggedIn) {
-                    // Logged in
-                    if (loginLinkDesktop) loginLinkDesktop.classList.add('hidden');
-                    if (registerLinkDesktop) registerLinkDesktop.classList.add('hidden');
-                    if (welcomeUserDesktop) {
-                        welcomeUserDesktop.textContent = `Welcome, ${user.username}!`;
-                        welcomeUserDesktop.classList.remove('hidden');
-                    }
-                    if (logoutButtonDesktop) logoutButtonDesktop.classList.remove('hidden');
-
-                    // Hero section buttons
-                    if (getStartedButton) getStartedButton.classList.add('hidden');
-                    if (supportUsButton) supportUsButton.classList.remove('hidden'); // Ensure Support Us is visible
-
-                    // Mobile UI updates (when logged in)
-                    if (signUpLinkMobile) signUpLinkMobile.classList.add('hidden');
-                    if (logInLinkMobile) logInLinkMobile.classList.add('hidden');
-                    if (loggedInOptionsMobile) loggedInOptionsMobile.classList.remove('hidden');
-                    if (welcomeUserMobile) welcomeUserMobile.querySelector('span').textContent = `Welcome, ${user.username}!`;
-                    if (logoutButtonMobile) logoutButtonMobile.classList.remove('hidden');
-
+                    desktopAuthOptions.classList.add('hidden'); 
+                    desktopLoggedInOptions.classList.remove('hidden');
+                    welcomeUserDesktop.querySelector('span').textContent = user.username;
+                    if (getStartedButton) getStartedButton.classList.add('hidden'); // Hide "Get Started" when logged in
                 } else {
-                    // Not logged in
-                    if (loginLinkDesktop) loginLinkDesktop.classList.remove('hidden');
-                    if (registerLinkDesktop) registerLinkDesktop.classList.remove('hidden');
-                    if (welcomeUserDesktop) welcomeUserDesktop.classList.add('hidden');
-                    if (logoutButtonDesktop) logoutButtonDesktop.classList.add('hidden');
+                    desktopAuthOptions.classList.remove('hidden');
+                    desktopLoggedInOptions.classList.add('hidden');
+                    if (getStartedButton) getStartedButton.classList.remove('hidden'); // Show "Get Started" when logged out
+                }
 
-                    // Hero section buttons
-                    if (getStartedButton) getStartedButton.classList.remove('hidden');
-                    if (supportUsButton) supportUsButton.classList.remove('hidden'); // Ensure Support Us is visible
-
-                    // Mobile UI updates (when not logged in)
-                    if (signUpLinkMobile) signUpLinkMobile.classList.remove('hidden');
-                    if (logInLinkMobile) logInLinkMobile.classList.remove('hidden');
-                    if (loggedInOptionsMobile) loggedInOptionsMobile.classList.add('hidden');
+                // Mobile UI
+                if (user && user.loggedIn) {
+                    mobileAuthOptions.classList.add('hidden');
+                    mobileLoggedInOptions.classList.remove('hidden');
+                    welcomeUserMobile.querySelector('span').textContent = user.username;
+                } else {
+                    mobileAuthOptions.classList.remove('hidden');
+                    mobileLoggedInOptions.classList.add('hidden');
                 }
             }
 
-            // Initial UI update on page load
-            updateUI();
+            // Logout functionality
+            function logout() {
+                localStorage.removeItem('user');
+                updateUI();
+                // Close menus if open
+                if (desktopProfileDropdown) desktopProfileDropdown.classList.remove('show');
+                if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                document.body.style.overflow = 'auto';
+                window.location.href = 'index.html'; // Redirect to homepage after logout
+            }
 
-            // Add logout functionality
-            const allLogoutButtons = [logoutButtonDesktop, logoutButtonMobile];
-            allLogoutButtons.forEach(button => {
-                if (button) {
-                    button.addEventListener('click', function() {
-                        localStorage.removeItem('user'); // Clear the user session
-                        updateUI(); // Update UI immediately after logout
-                        // Close mobile menu if open after logout
-                        mobileMenuPanel.classList.remove('open');
-                        mobileMenuOverlay.classList.remove('open');
-                        document.body.style.overflow = 'auto'; // Re-enable scrolling
-                        window.location.href = 'index.html'; // Redirect to refresh UI
-                    });
+            // Desktop Profile Dropdown Toggle
+            if (desktopProfileButton) {
+                desktopProfileButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (desktopProfileDropdown) {
+                        desktopProfileDropdown.classList.toggle('show');
+                    }
+                });
+            }
+
+            // Close desktop dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (desktopProfileDropdown && desktopProfileButton && !desktopProfileButton.contains(e.target) && !desktopProfileDropdown.contains(e.target)) {
+                    desktopProfileDropdown.classList.remove('show');
                 }
             });
 
-            // Mobile menu toggle functionality
+            // Mobile Menu Toggle
             if (mobileMenuButton) {
                 mobileMenuButton.addEventListener('click', function() {
-                    mobileMenuPanel.classList.add('open');
-                    mobileMenuOverlay.classList.add('open');
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
                 });
             }
 
+            // Close Mobile Menu
             if (closeMobileMenuButton) {
                 closeMobileMenuButton.addEventListener('click', function() {
-                    mobileMenuPanel.classList.remove('open');
-                    mobileMenuOverlay.classList.remove('open');
-                    document.body.style.overflow = 'auto'; // Re-enable scrolling
-                });
-            }
-
-            if (mobileMenuOverlay) {
-                mobileMenuOverlay.addEventListener('click', function() {
-                    mobileMenuPanel.classList.remove('open');
-                    mobileMenuOverlay.classList.remove('open');
-                    document.body.style.overflow = 'auto'; // Re-enable scrolling
-                });
-            }
-
-            // Links within mobile menu should also close the menu
-            const mobileMenuLinks = mobileMenuPanel.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenuPanel.classList.remove('open');
-                    mobileMenuOverlay.classList.remove('open');
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
                     document.body.style.overflow = 'auto';
                 });
-            });
+            }
 
-            // Placeholder links for future connection
-            if (likedVideosLinkMobile) likedVideosLinkMobile.href = "explore.html"; // Link to explore for now
-            if (uploadOptionMobile) uploadOptionMobile.href = "#"; // Placeholder for future upload page
-            if (faqLinkMobile) faqLinkMobile.href = "#"; // Placeholder for future FAQ page
-            if (contactSupportLinkMobile) contactSupportLinkMobile.href = "#"; // Placeholder for future Contact page
+            // Close Mobile Menu when clicking overlay
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Logout Buttons
+            if (logoutButtonDesktop) {
+                logoutButtonDesktop.addEventListener('click', logout);
+            }
+            if (logoutButtonMobile) {
+                logoutButtonMobile.addEventListener('click', logout);
+            }
+
+            // Initial rendering and UI update
+            renderPopularCategories();
+            updateUI();
         });
     </script>
-    <script src="assets/js/main.js"></script> 
 </body>
 </html>
