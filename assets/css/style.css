@@ -1,0 +1,385 @@
+/* Import Google Fonts for a modern, clean look */
+/* Montserrat for headings, Lato for body text */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;700&display=swap');
+
+/* --- Base Styles & Variables --- */
+:root {
+    /* Color Palette */
+    --color-background: #121212; /* Darkest background */
+    --color-surface: #1a1a1a;    /* Slightly lighter for cards/sections */
+    --color-primary: #8B0000;    /* Wine Red - Main accent */
+    --color-secondary: #FFD700;  /* Gold - Secondary accent for highlights */
+    --color-text-light: #e0e0e0; /* Light text for readability on dark background */
+    --color-text-muted: #a0a0a0; /* Muted text for secondary info */
+    --color-border: #333333;     /* Subtle borders */
+
+    /* Typography */
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Lato', sans-serif;
+    --font-size-base: 16px;
+}
+
+/* Universal box-sizing for easier layout calculations */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--color-text-light);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+
+/* Basic link styling */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--color-secondary);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text-light);
+    margin-bottom: 0.8em;
+    line-height: 1.2;
+}
+
+h1 { font-size: 2.5em; } /* Mobile first, will adjust for desktop */
+h2 { font-size: 2em; }
+h3 { font-size: 1.5em; }
+
+/* Utility class for content width */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; /* Padding on sides for mobile */
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px; /* Rounded corners for premium feel */
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none; /* Remove default button border */
+}
+
+.primary-btn {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4); /* Subtle shadow */
+}
+
+.primary-btn:hover {
+    background-color: #a00000; /* Slightly darker red on hover */
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
+}
+
+.secondary-btn {
+    background-color: transparent;
+    color: var(--color-secondary);
+    border: 2px solid var(--color-secondary);
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+}
+
+.secondary-btn:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background); /* Text becomes dark on gold background */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* --- Header Section --- */
+.main-header {
+    background-color: var(--color-surface);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky; /* Makes header stick to top */
+    top: 0;
+    z-index: 1000; /* Ensures header is above other content */
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.main-header .logo a {
+    font-family: var(--font-heading);
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--color-secondary); /* Gold logo */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem; /* Space between nav items */
+}
+
+.main-nav a {
+    color: var(--color-text-light);
+    font-weight: 400;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://placehold.co/1920x1080/000000/ffffff?text=Premium+Background') no-repeat center center/cover;
+    /* Replace with a subtle, premium background image if desired later */
+    /* background-image: url('../img/hero-bg.jpg'); */
+    padding: 4rem 0; /* Adjust padding for mobile */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh; /* Occupy a good portion of the viewport height */
+    position: relative;
+    overflow: hidden; /* Hide any overflow from background */
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2; /* Ensure content is above overlay */
+}
+
+.hero-section h1 {
+    font-size: 2.8em;
+    margin-bottom: 0.5em;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-section p {
+    font-size: 1.1em;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    color: var(--color-text-muted);
+}
+
+.hero-ctas {
+    display: flex;
+    flex-direction: column; /* Stack buttons on mobile */
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Content Grid Section (Video Previews) --- */
+.content-grid-section {
+    padding: 3rem 0;
+    background-color: var(--color-background);
+}
+
+.content-grid-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-secondary);
+}
+
+.video-previews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 1.5rem; /* Space between grid items */
+}
+
+.video-preview-item {
+    background-color: var(--color-surface);
+    border-radius: 12px; /* More rounded for cards */
+    overflow: hidden; /* Ensures image corners are rounded */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Deeper shadow for cards */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--color-border); /* Subtle border */
+    display: flex;
+    flex-direction: column; /* Stack thumbnail and info */
+}
+
+.video-preview-item:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.preview-thumbnail {
+    width: 100%;
+    height: 0; /* Trick for aspect ratio */
+    padding-bottom: 56.25%; /* 16:9 aspect ratio (height / width * 100%) */
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area, crop if necessary */
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.video-preview-item:hover .preview-thumbnail img {
+    transform: scale(1.05); /* Slight zoom on image hover */
+}
+
+.preview-info {
+    padding: 1rem;
+    flex-grow: 1; /* Allows info to take up remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.preview-info h3 {
+    font-size: 1.2em;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+}
+
+.preview-info .stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+}
+
+.preview-info .stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+/* --- Footer Section --- */
+.main-footer {
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid var(--color-border);
+}
+
+.main-footer .footer-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column; /* Stack on mobile */
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.main-footer .footer-nav a {
+    color: var(--color-text-muted);
+    font-size: 0.95em;
+}
+
+.main-footer .footer-nav a:hover {
+    color: var(--color-primary);
+}
+
+.main-footer p {
+    font-size: 0.85em;
+    margin-bottom: 0.5rem;
+}
+
+.main-footer .disclaimer {
+    font-size: 0.75em;
+    color: #666;
+    margin-top: 1rem;
+}
+
+/* --- Responsive Adjustments (Desktop/Tablet) --- */
+@media (min-width: 768px) {
+    /* Adjust header for wider screens */
+    .main-header .container {
+        flex-wrap: nowrap; /* Prevent wrapping */
+    }
+
+    /* Adjust hero section for wider screens */
+    .hero-section {
+        padding: 6rem 0;
+        min-height: 70vh;
+    }
+
+    .hero-section h1 {
+        font-size: 3.5em; /* Larger heading */
+    }
+
+    .hero-ctas {
+        flex-direction: row; /* Buttons side-by-side */
+        gap: 1.5rem;
+    }
+
+    /* Adjust content grid for wider screens */
+    .content-grid-section {
+        padding: 4rem 0;
+    }
+
+    .video-previews-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly larger min-width */
+        gap: 2rem;
+    }
+
+    /* Adjust footer for wider screens */
+    .main-footer .footer-nav ul {
+        flex-direction: row; /* Links in a row */
+        justify-content: center;
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    h1 { font-size: 4em; }
+    h2 { font-size: 2.5em; }
+
+    .hero-section {
+        min-height: 80vh;
+    }
+}

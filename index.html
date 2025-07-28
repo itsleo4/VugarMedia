@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VugarMedia | Premium Video Sharing</title>
+    <meta name="description" content="Private video sharing platform for exclusive content">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-dark text-light font-sans antialiased">
+    <!-- Navigation Bar -->
+    <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                    <i class="fas fa-play text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div id="authLinks" class="hidden md:flex items-center space-x-6">
+                <!-- FIX: Changed href from '#' to 'explore.html' -->
+                <a href="explore.html" class="text-gray-300 hover:text-white transition">Explore</a>
+                <a href="membership.html" class="text-gray-300 hover:text-white transition">Membership</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">About</a>
+                
+                <div class="flex space-x-3 ml-4">
+                    <!-- Login/Register links (will be hidden when logged in) -->
+                    <a href="login.html" id="loginLink" class="px-4 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition">Login</a>
+                    <a href="register.html" id="registerLink" class="px-4 py-2 rounded-md bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 transition">Register</a>
+
+                    <!-- Logged-in elements (initially hidden) -->
+                    <span id="welcomeUser" class="text-white px-4 py-2 hidden"></span> 
+                    <button id="logoutButton" class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition hidden">Logout</button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-300 hover:text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative py-16 md:py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-dark via-primary/10 to-dark z-0"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    Join Our <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Private Community</span>
+                </h1>
+                <p class="text-xl text-gray-300 mb-8">
+                    Access exclusive video content in a premium, ad-free environment. 
+                    Connect with creators and like-minded members.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <!-- 'Get Started' button - will be hidden when logged in -->
+                    <a href="register.html" id="getStartedButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition transform hover:scale-105">
+                        Get Started <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <!-- 'Support Us' button - made more eye-catching and linked to donate.html -->
+                    <a href="donate.html" id="supportUsButton" class="px-8 py-3 rounded-md bg-yellow-500 text-dark font-bold hover:bg-yellow-400 transition transform hover:scale-105 shadow-lg shadow-yellow-500/30">
+                        Support Us <i class="fas fa-heart ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Preview Section -->
+    <section class="py-12 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
+                Featured Content
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Video Card 1 -->
+                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative">
+                            <img src="assets/img/placeholder1.jpg" alt="Video preview" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 24.5K</span>
+                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 1.2K</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-1">Premium Content Showcase</h3>
+                            <p class="text-sm text-gray-400">By CreatorName • 12:34</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Video Card 2 -->
+                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative">
+                            <img src="assets/img/placeholder2.jpg" alt="Video preview" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 18.3K</span>
+                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 890</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-1">Exclusive Member Video</h3>
+                            <p class="text-sm text-gray-400">By CreatorName • 8:45</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Video Card 3 -->
+                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative">
+                            <img src="assets/img/placeholder3.jpg" alt="Video preview" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 32.1K</span>
+                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 2.4K</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-1">Behind The Scenes</h3>
+                            <p class="text-sm text-gray-400">By CreatorName • 15:22</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Video Card 4 -->
+                <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative">
+                            <img src="assets/img/placeholder4.jpg" alt="Video preview" class="w-full h-48 object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 9.7K</span>
+                                    <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 540</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-1">Special Feature Preview</h3>
+                            <p class="text-sm text-gray-400">By CreatorName • 6:18</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <a href="#" class="inline-flex items-center text-primary hover:text-secondary font-medium">
+                    View More Content <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Membership CTA -->
+    <section class="py-16 bg-gradient-to-br from-dark via-primary/10 to-dark">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto bg-gray-800/50 rounded-xl p-8 md:p-12 backdrop-blur-sm border border-gray-700">
+                <div class="text-center">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">Upgrade Your Experience</h2>
+                    <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+                        Unlock premium features, exclusive content, and an ad-free experience with our membership plans.
+                    </p>
+                    <a href="membership.html" class="inline-block px-8 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition transform hover:scale-105">
+                        Explore Membership Options
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/80 border-t border-gray-800 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                        Premium video sharing platform for exclusive content.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="explore.html" class="text-gray-400 hover:text-white transition">Explore</a></li>
+                        <li><a href="membership.html" class="text-gray-400 hover:text-white transition">Membership</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                        <li><a href="https://t.me/+Xa9CQA1GNS43MDM1" target="_blank" class="text-gray-400 hover:text-white transition">Telegram</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2023 VugarMedia. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for login/logout functionality and button visibility -->
+    <!-- IMPORTANT: Place this script here, just before </body> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation bar elements
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const welcomeUser = document.getElementById('welcomeUser');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Hero section buttons
+            const getStartedButton = document.getElementById('getStartedButton');
+            const supportUsButton = document.getElementById('supportUsButton');
+
+            // Check if user is logged in
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (user && user.loggedIn) {
+                // User is logged in:
+                // Hide login/register in navbar
+                if (loginLink) loginLink.classList.add('hidden');
+                if (registerLink) registerLink.classList.add('hidden');
+                
+                // Show welcome message and logout button in navbar
+                if (welcomeUser) {
+                    welcomeUser.textContent = `Welcome, ${user.username}!`;
+                    welcomeUser.classList.remove('hidden');
+                }
+                if (logoutButton) logoutButton.classList.remove('hidden');
+
+                // Hide 'Get Started' button in hero section
+                if (getStartedButton) getStartedButton.classList.add('hidden');
+
+                // Ensure 'Support Us' button is visible (it's always visible by default, but good for explicit control)
+                if (supportUsButton) supportUsButton.classList.remove('hidden');
+
+            } else {
+                // User is NOT logged in:
+                // Ensure login/register are visible in navbar
+                if (loginLink) loginLink.classList.remove('hidden');
+                if (registerLink) registerLink.classList.remove('hidden');
+
+                // Hide welcome message and logout button in navbar
+                if (welcomeUser) welcomeUser.classList.add('hidden');
+                if (logoutButton) logoutButton.classList.add('hidden');
+
+                // Ensure 'Get Started' button is visible in hero section
+                if (getStartedButton) getStartedButton.classList.remove('hidden');
+
+                // Ensure 'Support Us' button is visible (it's always visible by default)
+                if (supportUsButton) supportUsButton.classList.remove('hidden');
+            }
+
+            // Add logout functionality
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    localStorage.removeItem('user'); // Clear the user session
+                    // For a completely fresh start during testing, you might clear all registered users:
+                    // localStorage.removeItem('users'); 
+                    window.location.href = 'index.html'; // Redirect to update UI
+                });
+            }
+        });
+    </script>
+    <script src="assets/js/main.js"></script> 
+</body>
+</html>

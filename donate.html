@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support VugarMedia | Instant Impact & Rewards</title>
+    <meta name="description" content="Make an instant impact. Choose a small contribution to keep VugarMedia ad-free and thriving.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        accentYellow: '#facc15',
+                        successGreen: '#22c55e',
+                        cardBg: 'rgba(23, 23, 39, 0.7)',
+                        cardBorder: '#374151',
+                        specialRed: '#ef4444',
+                        neonPink: '#ff00ff',
+                        neonBlue: '#00ffff',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #6d28d9, 0 0 20px #6d28d9' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #9333ea, 0 0 40px #9333ea' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Game-inspired UI styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            overflow-x: hidden;
+        }
+        
+        /* Animated stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: var(--opacity); }
+        }
+        
+        .donate-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.85) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 
+                        0 0 50px rgba(109, 40, 217, 0.2);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donate-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.1) 0%, 
+                                      transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .contribution-option {
+            background-color: rgba(23, 23, 39, 0.7);
+            border: 1px solid #374151;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .contribution-option:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(109,40,217,0.6);
+            border-color: var(--tw-colors-primary);
+            background-color: rgba(41,37,79,0.9);
+        }
+        
+        .contribution-option.active {
+            border-color: var(--tw-colors-accentYellow);
+            box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.6), 
+                        0 15px 40px rgba(109,40,217,0.7);
+            transform: scale(1.03);
+            animation: pulse-slow 2s infinite;
+        }
+        
+        .contribution-option::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.15) 0%, 
+                                      transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+        
+        .contribution-option:hover::before {
+            opacity: 1;
+        }
+        
+        .price-display {
+            font-size: 2.75rem;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(109, 40, 217, 0.7);
+        }
+        
+        /* Game UI elements */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            background: rgba(55, 65, 81, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, 
+                                      #6d28d9, 
+                                      #9333ea, 
+                                      #6d28d9);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: progressGlow 2s ease infinite;
+        }
+        
+        @keyframes progressGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .currency-toggle-group {
+            display: inline-flex;
+            background-color: rgba(15, 23, 42, 0.7);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 
+                        0 0 15px rgba(109, 40, 217, 0.3);
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+        }
+        
+        .currency-toggle-label {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-align: center;
+            color: rgba(156, 163, 175, 0.7);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .currency-toggle-label:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.05);
+        }
+        
+        .currency-toggle-input:checked + .currency-toggle-label {
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.8), 
+                                      rgba(147, 51, 234, 0.8));
+            color: white;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        visibility 0.4s;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, 
+                                      rgba(15,23,42,0.98) 0%, 
+                                      rgba(41,37,79,0.95) 100%);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7),
+                        0 0 50px rgba(109, 40, 217, 0.3);
+            transform: translateY(-30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            border: 2px solid rgba(109, 40, 217, 0.5);
+            overflow: hidden;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.1) 0%, 
+                                      transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        .payment-method-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+            border-radius: 0.75rem;
+            font-weight: 700;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.8), 
+                                      rgba(147, 51, 234, 0.8));
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-method-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(109,40,217,0.6);
+        }
+        
+        .payment-method-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(255, 255, 255, 0.3) 0%, 
+                                      transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .payment-method-button:hover::after {
+            opacity: 1;
+        }
+        
+        .payment-method-button.active {
+            border: 3px solid var(--tw-colors-accentYellow);
+            box-shadow: 0 0 0 6px rgba(250, 204, 21, 0.7),
+                        0 10px 30px rgba(109,40,217,0.7);
+            animation: pulse-slow 1.5s infinite;
+        }
+        
+        .qr-code-img {
+            max-width: 220px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4),
+                        0 0 20px rgba(109, 40, 217, 0.4);
+            border: 2px solid rgba(109, 40, 217, 0.5);
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Confetti effect */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+        
+        /* Floating coins animation */
+        .floating-coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23facc15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>');
+            background-size: contain;
+            opacity: 0;
+            z-index: -1;
+            animation: float-coin 8s linear infinite;
+        }
+        
+        @keyframes float-coin {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+                left: 10%;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg);
+                opacity: 0;
+                left: 90%;
+            }
+        }
+        
+        /* Notification message */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.9), 
+                                      rgba(147, 51, 234, 0.9));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            min-width: 200px;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        /* Home button */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.9), 
+                                      rgba(147, 51, 234, 0.9));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            animation: pulse-slow 2s infinite;
+        }
+        
+        .home-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.6);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .contribution-option {
+                min-height: 180px;
+                padding: 1rem;
+            }
+            
+            .price-display {
+                font-size: 2rem;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="text-light font-sans antialiased min-h-screen flex flex-col">
+    <!-- Animated stars background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Floating coins -->
+    <div id="floatingCoins"></div>
+    
+    <!-- Home Button -->
+    <a href="index.html" class="home-btn">
+        <i class="fas fa-home text-xl"></i>
+    </a>
+    
+    <!-- Main Donation Section -->
+    <main class="flex-grow py-16 md:py-24 flex flex-col items-center justify-center relative">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto donate-card p-8 md:p-10 text-center relative">
+                <!-- Confetti container -->
+                <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+                
+                <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent animate-glow">
+                    Power Up VugarMedia!
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Your support unlocks exclusive perks and fuels our creative engine!
+                </p>
+
+                <!-- Progress Bar with Game UI -->
+                <div class="mb-12">
+                    <h2 class="text-xl font-semibold text-accentYellow mb-3 animate-float">
+                        <i class="fas fa-bolt mr-2"></i> Community Goal: 75% Complete!
+                    </h2>
+                    <div class="progress-container mb-2">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        <span class="font-bold text-white">3,428</span> supporters of <span class="font-bold text-white">5,000</span> goal
+                    </p>
+                </div>
+
+                <!-- Currency Toggle - Game Style -->
+                <div class="flex justify-center mb-10">
+                    <div class="currency-toggle-group" id="currencyToggleGroup">
+                        <input type="radio" id="currencyUsd" name="currency" value="USD" checked class="currency-toggle-input">
+                        <label for="currencyUsd" class="currency-toggle-label">
+                            <span class="text-xl">$ USD</span>
+                        </label>
+                        <input type="radio" id="currencyInr" name="currency" value="INR" class="currency-toggle-input">
+                        <label for="currencyInr" class="currency-toggle-label">
+                            <span class="text-xl">₹ INR</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Contribution Options Grid - Game Card Style -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <!-- Option 1 -->
+                    <div class="contribution-option" data-usd="0.99" data-inr="10" data-name="Power Boost">
+                        <div>
+                            <i class="fas fa-bolt text-accentYellow text-4xl mb-4 animate-float"></i>
+                            <h3 class="text-2xl font-bold mb-2">Power Boost</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$0.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +10 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <!-- Option 2 -->
+                    <div class="contribution-option" data-usd="1.99" data-inr="29" data-name="Ad Shield">
+                        <div>
+                            <i class="fas fa-shield-alt text-green-400 text-4xl mb-4 animate-float" style="animation-delay: 0.2s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Ad Shield</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$1.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +25 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <!-- Option 3 -->
+                    <div class="contribution-option" data-usd="4.99" data-inr="49" data-name="Content Hero">
+                        <div>
+                            <i class="fas fa-star text-yellow-300 text-4xl mb-4 animate-float" style="animation-delay: 0.4s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Content Hero</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$4.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +100 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <!-- Option 4 -->
+                    <div class="contribution-option" data-usd="9.99" data-inr="99" data-name="Legendary Supporter">
+                        <div>
+                            <i class="fas fa-crown text-purple-300 text-4xl mb-4 animate-float" style="animation-delay: 0.6s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Legendary</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$9.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +250 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Amount Option -->
+                <div class="mt-8 text-center">
+                    <p class="text-gray-400 text-lg mb-4">
+                        Or enter custom amount:
+                    </p>
+                    <div class="flex items-center justify-center space-x-2 mb-4">
+                        <span id="customCurrencySymbol" class="text-2xl text-gray-300">$</span>
+                        <input type="number" id="customAmountInput" placeholder="Amount" min="1" class="input-field bg-gray-800 border border-gray-700 text-white text-lg rounded-lg focus:ring-primary focus:border-primary block w-40 p-2.5 text-center">
+                    </div>
+                    <button id="selectCustomAmountButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-gray-700 to-gray-800 text-white font-medium hover:bg-gray-600 transition transform hover:scale-105">
+                        Custom Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <button class="close-button absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" id="closePaymentModal">&times;</button>
+            
+            <div class="flex flex-col items-center">
+                <i class="fas fa-gem text-accentYellow text-5xl mb-4 animate-float"></i>
+                <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Complete Your Support
+                </h2>
+                <p class="text-lg text-gray-300 mb-6">
+                    You're about to make an impact with<br>
+                    <span id="modalSelectedName" class="text-accentYellow font-bold text-xl"></span> for <span id="modalSelectedAmount" class="font-bold text-accentYellow text-xl"></span>
+                </p>
+                
+                <div class="w-full max-w-md mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-accentYellow">Choose Payment Method</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="paymentMethodButtonsContainer">
+                        <button id="selectUpiButton" class="payment-method-button">
+                            <i class="fas fa-qrcode mr-2"></i> UPI
+                        </button>
+                        <button id="selectPaypalButton" class="payment-method-button">
+                            <i class="fab fa-paypal mr-2"></i> PayPal
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- QR Code Display -->
+                <div id="qrCodeDisplay" class="hidden w-full">
+                    <div id="paypalQrSection" class="hidden flex flex-col items-center mb-6">
+                        <img src="assets/img/paypal.png" alt="PayPal QR Code" class="qr-code-img mb-4">
+                        <p class="text-gray-400 text-sm mb-2">Scan or click below to pay</p>
+                        <a href="https://www.paypal.me/PawanKumar35438" target="_blank" class="text-primary hover:text-secondary font-medium">
+                            PayPal.me/PawanKumar35438 <i class="fas fa-external-link-alt ml-1"></i>
+                        </a>
+                    </div>
+                    
+                    <div id="upiQrSection" class="hidden flex flex-col items-center mb-6">
+                        <img src="assets/img/upi.png" alt="UPI QR Code" class="qr-code-img mb-4">
+                        <p class="text-gray-400 text-sm mb-2">Scan or copy UPI ID below</p>
+                        <div class="flex items-center bg-gray-800 rounded-lg px-4 py-2">
+                            <span class="text-primary font-mono">bharti00077-2@okaxis</span>
+                            <button onclick="copyToClipboard('bharti00077-2@okaxis')" class="ml-2 text-gray-400 hover:text-white">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="confirmPaymentButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-successGreen to-green-500 text-white font-bold mt-4 hover:opacity-90 transition transform hover:scale-105 hidden">
+                        <i class="fas fa-check-circle mr-2"></i> Payment Sent
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create stars background
+            createStars();
+            
+            // Create floating coins
+            createFloatingCoins();
+            
+            // DOM elements
+            const currencyRadios = document.querySelectorAll('input[name="currency"]');
+            const customAmountInput = document.getElementById('customAmountInput');
+            const customCurrencySymbol = document.getElementById('customCurrencySymbol');
+            const contributionOptions = document.querySelectorAll('.contribution-option');
+            const selectCustomAmountButton = document.getElementById('selectCustomAmountButton');
+            const paymentModal = document.getElementById('paymentModal');
+            const closePaymentModalButton = document.getElementById('closePaymentModal');
+            const modalSelectedName = document.getElementById('modalSelectedName');
+            const modalSelectedAmount = document.getElementById('modalSelectedAmount');
+            const selectUpiButton = document.getElementById('selectUpiButton');
+            const selectPaypalButton = document.getElementById('selectPaypalButton');
+            const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+            const paypalQrSection = document.getElementById('paypalQrSection');
+            const upiQrSection = document.getElementById('upiQrSection');
+            const confirmPaymentButton = document.getElementById('confirmPaymentButton');
+            const notification = document.getElementById('notification');
+            const confettiContainer = document.getElementById('confettiContainer');
+            
+            let currentCurrency = 'USD';
+            let selectedAmount = 0;
+            let selectedName = '';
+            
+            // Create stars for background
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                const starCount = 100;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random properties
+                    const size = Math.random() * 3;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const opacity = Math.random() * 0.8 + 0.1;
+                    const duration = Math.random() * 5 + 3;
+                    
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${posX}%`;
+                    star.style.top = `${posY}%`;
+                    star.style.opacity = opacity;
+                    star.style.setProperty('--opacity', opacity);
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Create floating coins animation
+            function createFloatingCoins() {
+                const coinsContainer = document.getElementById('floatingCoins');
+                const coinCount = 10;
+                
+                for (let i = 0; i < coinCount; i++) {
+                    const coin = document.createElement('div');
+                    coin.className = 'floating-coin';
+                    
+                    // Random properties
+                    const size = Math.random() * 20 + 20;
+                    const delay = Math.random() * 5;
+                    const duration = Math.random() * 5 + 8;
+                    
+                    coin.style.width = `${size}px`;
+                    coin.style.height = `${size}px`;
+                    coin.style.animationDuration = `${duration}s`;
+                    coin.style.animationDelay = `${delay}s`;
+                    coin.style.left = `${Math.random() * 90 + 5}%`;
+                    
+                    coinsContainer.appendChild(coin);
+                }
+            }
+            
+            // Create confetti effect
+            function createConfetti() {
+                confettiContainer.innerHTML = '';
+                const colors = ['#6d28d9', '#9333ea', '#facc15', '#22c55e', '#ef4444'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random properties
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const size = Math.random() * 10 + 5;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const rotation = Math.random() * 360;
+                    const animationDuration = Math.random() * 3 + 2;
+                    
+                    confetti.style.backgroundColor = color;
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.left = `${posX}%`;
+                    confetti.style.top = `${posY}%`;
+                    confetti.style.transform = `rotate(${rotation}deg)`;
+                    confetti.style.animation = `fall ${animationDuration}s ease-in forwards`;
+                    
+                    confettiContainer.appendChild(confetti);
+                }
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confettiContainer.innerHTML = '';
+                }, 3000);
+            }
+            
+            // Update currency display
+            function updateCurrencyDisplay() {
+                contributionOptions.forEach(option => {
+                    const priceDisplaySpan = option.querySelector('.currency-price');
+                    const usdAmount = option.dataset.usd;
+                    const inrAmount = option.dataset.inr;
+                    
+                    priceDisplaySpan.textContent = currentCurrency === 'USD' ? `$${usdAmount}` : `₹${inrAmount}`;
+                });
+                
+                customCurrencySymbol.textContent = currentCurrency === 'USD' ? '$' : '₹';
+            }
+            
+            // Set active contribution option
+            function setActiveOption(activeOption) {
+                contributionOptions.forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                if (activeOption) {
+                    activeOption.classList.add('active');
+                }
+            }
+            
+            // Show notification
+            function showNotification(message, isSuccess = true) {
+                notification.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(isSuccess ? 'bg-successGreen' : 'bg-specialRed');
+                notification.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 3000);
+            }
+            
+            // Copy to clipboard
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Copied to clipboard!');
+                }).catch(err => {
+                    showNotification('Failed to copy', false);
+                });
+            }
+            
+            // Currency change event
+            currencyRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentCurrency = this.value;
+                    updateCurrencyDisplay();
+                });
+            });
+            
+            // Contribution option click event
+            contributionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    setActiveOption(this);
+                    selectedName = this.dataset.name;
+                    selectedAmount = currentCurrency === 'USD' ? parseFloat(this.dataset.usd) : parseFloat(this.dataset.inr);
+                    
+                    // Clear custom input when selecting preset option
+                    customAmountInput.value = '';
+                });
+            });
+            
+            // Custom amount input event
+            customAmountInput.addEventListener('input', function() {
+                setActiveOption(null);
+                selectedAmount = parseFloat(this.value) || 0;
+                selectedName = 'Custom Support';
+            });
+            
+            // Select custom amount button
+            selectCustomAmountButton.addEventListener('click', function() {
+                if (selectedAmount <= 0) {
+                    showNotification('Please enter a valid amount', false);
+                    return;
+                }
+                
+                openPaymentModal();
+            });
+            
+            // Contribution option select buttons
+            document.querySelectorAll('.select-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const option = this.closest('.contribution-option');
+                    setActiveOption(option);
+                    selectedName = option.dataset.name;
+                    selectedAmount = currentCurrency === 'USD' ? parseFloat(option.dataset.usd) : parseFloat(option.dataset.inr);
+                    openPaymentModal();
+                });
+            });
+            
+            // Open payment modal
+            function openPaymentModal() {
+                if (!selectedName || selectedAmount <= 0) {
+                    showNotification('Please select an amount first', false);
+                    return;
+                }
+                
+                modalSelectedName.textContent = selectedName;
+                modalSelectedAmount.textContent = currentCurrency === 'USD' ? `$${selectedAmount}` : `₹${selectedAmount}`;
+                
+                // Reset modal state
+                qrCodeDisplay.classList.add('hidden');
+                paypalQrSection.classList.add('hidden');
+                upiQrSection.classList.add('hidden');
+                confirmPaymentButton.classList.add('hidden');
+                
+                selectUpiButton.classList.remove('active');
+                selectPaypalButton.classList.remove('active');
+                
+                paymentModal.classList.add('show');
+            }
+            
+            // Close payment modal
+            closePaymentModalButton.addEventListener('click', function() {
+                paymentModal.classList.remove('show');
+            });
+            
+            // Select UPI payment
+            selectUpiButton.addEventListener('click', function() {
+                selectUpiButton.classList.add('active');
+                selectPaypalButton.classList.remove('active');
+                
+                qrCodeDisplay.classList.remove('hidden');
+                upiQrSection.classList.remove('hidden');
+                paypalQrSection.classList.add('hidden');
+                confirmPaymentButton.classList.remove('hidden');
+            });
+            
+            // Select PayPal payment
+            selectPaypalButton.addEventListener('click', function() {
+                selectPaypalButton.classList.add('active');
+                selectUpiButton.classList.remove('active');
+                
+                qrCodeDisplay.classList.remove('hidden');
+                paypalQrSection.classList.remove('hidden');
+                upiQrSection.classList.add('hidden');
+                confirmPaymentButton.classList.remove('hidden');
+            });
+            
+            // Confirm payment button
+            confirmPaymentButton.addEventListener('click', function() {
+                createConfetti();
+                showNotification('Thank you for your support!');
+                paymentModal.classList.remove('show');
+                
+                // Reset selection
+                setActiveOption(null);
+                selectedAmount = 0;
+                selectedName = '';
+                customAmountInput.value = '';
+            });
+            
+            // Initialize
+            updateCurrencyDisplay();
+        });
+    </script>
+</body>
+</html>

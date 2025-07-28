@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Pro | VugarMedia</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        premium: 'rgba(109,40,217,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .membership-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.95) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(109, 40, 217, 0.25);
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+        }
+        
+        .payment-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+            background: linear-gradient(135deg, rgba(109,40,217,0.2) 0%, rgba(147,51,234,0.2) 100%);
+        }
+        
+        .payment-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.5);
+            background: linear-gradient(135deg, rgba(109,40,217,0.3) 0%, rgba(147,51,234,0.3) 100%);
+        }
+        
+        .payment-btn.active {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.6);
+        }
+        
+        .video-preview {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(109,40,217,0.5);
+        }
+        
+        .qr-code {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(109, 40, 217, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); }
+        }
+        
+        .telegram-btn {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(0,136,204,0.1) 0%, rgba(0,136,204,0.2) 100%);
+        }
+        
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(0,136,204,0.2) 0%, rgba(0,136,204,0.3) 100%);
+        }
+        
+        .social-link {
+            transition: all 0.2s ease;
+        }
+        
+        .social-link:hover {
+            transform: scale(1.05);
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+        }
+        
+        /* Audio player hidden but functional */
+        #bgMusic {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body class="text-light min-h-screen flex items-center justify-center p-4">
+    <!-- Home Button -->
+    <a href="index.html" class="home-btn bg-primary/90 hover:bg-primary text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-home text-xl"></i>
+    </a>
+    
+    <!-- Background Audio (autoplay loop) -->
+    <audio id="bgMusic" autoplay loop>
+        <source src="assets/audio/ambient.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Main Container -->
+    <div class="membership-card rounded-2xl border border-gray-700 w-full max-w-2xl overflow-hidden relative">
+        <!-- Premium Glow Effect -->
+        <div class="absolute inset-0 bg-premium opacity-30 pointer-events-none"></div>
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-center relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 premium-badge px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                Premium Access
+            </div>
+            <a href="index.html" class="flex items-center justify-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-white/20 flex items-center justify-center">
+                    <i class="fas fa-crown text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold text-white">VugarMedia Pro</span>
+            </a>
+            <h1 class="text-3xl font-bold mt-4 text-white">Unlock Exclusive Vugar Content</h1>
+            <p class="text-white/80 mt-2">Join our elite community and access premium content not available anywhere else</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="p-6 md:p-8 relative">
+            <!-- Video Preview -->
+            <div class="video-preview mb-8 rounded-lg overflow-hidden relative">
+                <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/6-yo-anal-stockings.jpg" 
+                     alt="Premium content preview" 
+                     class="w-full h-auto rounded-lg">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <i class="fas fa-play text-white text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Options -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-bold text-center">Choose Your Payment Method</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="paymentOptions">
+                    <!-- UPI Button -->
+                    <button 
+                        id="upiBtn"
+                        class="payment-btn p-4 rounded-xl border border-primary/30 flex flex-col items-center justify-center"
+                        onclick="selectPayment('upi')">
+                        <i class="fas fa-rupee-sign text-3xl mb-2"></i>
+                        <span class="font-bold">Pay with UPI</span>
+                        <span class="text-xs opacity-70 mt-1">Instant access</span>
+                    </button>
+                    
+                    <!-- PayPal Button -->
+                    <button 
+                        id="paypalBtn"
+                        class="payment-btn p-4 rounded-xl border border-primary/30 flex flex-col items-center justify-center"
+                        onclick="selectPayment('paypal')">
+                        <i class="fab fa-paypal text-3xl mb-2"></i>
+                        <span class="font-bold">Pay with PayPal</span>
+                        <span class="text-xs opacity-70 mt-1">Secure international payments</span>
+                    </button>
+                </div>
+                
+                <!-- QR Code Container (initially hidden) -->
+                <div id="qrContainer" class="hidden text-center">
+                    <div class="qr-code inline-block p-4 bg-white rounded-xl mb-4">
+                        <img id="dynamicQR" src="" alt="Payment QR Code" class="w-48 h-48 object-contain">
+                    </div>
+                    <div id="paymentDetails" class="mb-4">
+                        <p class="text-sm font-medium" id="paymentAddress"></p>
+                        <p class="text-xs opacity-70 mt-1" id="paymentInstructions"></p>
+                    </div>
+                    
+                    <button 
+                        id="submitProofBtn"
+                        class="auth-btn w-full max-w-xs mx-auto bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-lg px-5 py-3 text-center mb-4">
+                        <i class="fas fa-check-circle mr-2"></i> Submit Payment Proof
+                    </button>
+                    
+                    <a href="#" id="switchMethod" class="text-sm text-primary hover:text-secondary inline-block">
+                        <i class="fas fa-exchange-alt mr-1"></i> Switch Payment Method
+                    </a>
+                </div>
+                
+                <!-- Social Links with Telegram Focus -->
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-center text-lg font-medium mb-4">Get Instant Support</h3>
+                    
+                    <!-- Telegram (Primary Focus) -->
+                    <div class="flex flex-col items-center mb-6">
+                        <a href="https://t.me/+Xa9CQA1GNS43MDM1" 
+                           target="_blank"
+                           class="telegram-btn px-6 py-3 rounded-lg flex items-center justify-center w-full max-w-xs mx-auto mb-2">
+                            <i class="fab fa-telegram text-2xl mr-3 text-[#0088cc]"></i>
+                            <span class="font-bold">Message us on Telegram</span>
+                        </a>
+                        <p class="text-xs opacity-60 text-center">For fastest response and premium support</p>
+                    </div>
+                    
+                    <!-- Other Social Links -->
+                    <div class="flex justify-center space-x-4">
+                        <a href="https://www.instagram.com/freakypremiumunlock?igsh=MXQ1cnh1ajIxZTEwbg==" 
+                           target="_blank"
+                           class="social-link w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        
+                        <a href="https://whatsapp.com/channel/0029Vb6KSvMH5JM4M1uaBS0R" 
+                           target="_blank"
+                           class="social-link w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Payment details configuration
+        const paymentMethods = {
+            upi: {
+                qr: 'assets/img/upi.png',
+                address: 'bharti00077-2@okaxis',
+                instructions: 'Use any UPI app to send payment to this address'
+            },
+            paypal: {
+                qr: 'assets/img/paypal.png',
+                address: 'https://www.paypal.me/PawanKumar35438',
+                instructions: 'Click the link above to complete PayPal payment'
+            }
+        };
+
+        // Payment selection handler
+        function selectPayment(method) {
+            const upiBtn = document.getElementById('upiBtn');
+            const paypalBtn = document.getElementById('paypalBtn');
+            const qrContainer = document.getElementById('qrContainer');
+            const paymentOptions = document.getElementById('paymentOptions');
+            const dynamicQR = document.getElementById('dynamicQR');
+            const paymentAddress = document.getElementById('paymentAddress');
+            const paymentInstructions = document.getElementById('paymentInstructions');
+            
+            // Set active state
+            if (method === 'upi') {
+                upiBtn.classList.add('active');
+                paypalBtn.classList.add('hidden');
+            } else {
+                paypalBtn.classList.add('active');
+                upiBtn.classList.add('hidden');
+            }
+            
+            // Update payment details
+            dynamicQR.src = paymentMethods[method].qr;
+            dynamicQR.alt = `${method.toUpperCase()} Payment QR Code`;
+            
+            if (method === 'upi') {
+                paymentAddress.innerHTML = `UPI ID: <strong class="text-primary">${paymentMethods.upi.address}</strong>`;
+            } else {
+                paymentAddress.innerHTML = `PayPal: <a href="${paymentMethods.paypal.address}" target="_blank" class="text-primary hover:text-secondary font-bold">PayPal.me Link</a>`;
+            }
+            
+            paymentInstructions.textContent = paymentMethods[method].instructions;
+            
+            // Show QR code
+            paymentOptions.classList.add('hidden');
+            qrContainer.classList.remove('hidden');
+            
+            // Ensure QR code loads properly
+            dynamicQR.onerror = function() {
+                this.src = `https://placehold.co/200/ffffff/6d28d9?text=${method.toUpperCase()}+QR`;
+                console.warn(`Could not load ${method} QR code from: ${paymentMethods[method].qr}`);
+            };
+        }
+        
+        // Switch payment method handler
+        document.getElementById('switchMethod').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const upiBtn = document.getElementById('upiBtn');
+            const paypalBtn = document.getElementById('paypalBtn');
+            const qrContainer = document.getElementById('qrContainer');
+            const paymentOptions = document.getElementById('paymentOptions');
+            
+            // Reset buttons
+            upiBtn.classList.remove('active', 'hidden');
+            paypalBtn.classList.remove('active', 'hidden');
+            
+            // Hide QR container
+            qrContainer.classList.add('hidden');
+            paymentOptions.classList.remove('hidden');
+        });
+        
+        // Submit proof handler
+        document.getElementById('submitProofBtn').addEventListener('click', function() {
+            // In a real app, this would upload proof to your server
+            alert('Payment proof submitted! Please contact us on Telegram for instant activation.');
+            
+            // Open Telegram in new tab
+            window.open('https://t.me/+Xa9CQA1GNS43MDM1', '_blank');
+            
+            // Simulate successful payment
+            localStorage.setItem('user_pro', 'true');
+            window.location.href = 'pro.html';
+        });
+        
+        // Auto-play background music with user interaction
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }, { once: true });
+        
+        // Initialize with first payment method if coming back to page
+        window.addEventListener('load', function() {
+            if (window.location.hash === '#upi') {
+                selectPayment('upi');
+            } else if (window.location.hash === '#paypal') {
+                selectPayment('paypal');
+            }
+        });
+    </script>
+</body>
+</html>

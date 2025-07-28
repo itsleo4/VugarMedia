@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | VugarMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .auth-container {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(109,40,217,0.3);
+        }
+        
+        .auth-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(109,40,217,0.5);
+        }
+    </style>
+</head>
+<body class="bg-dark text-light min-h-screen flex items-center justify-center p-4">
+    <div class="auth-container rounded-xl border border-gray-700 w-full max-w-md overflow-hidden">
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-center">
+            <a href="index.html" class="flex items-center justify-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-white/20 flex items-center justify-center">
+                    <i class="fas fa-play text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold text-white">VugarMedia</span>
+            </a>
+            <h1 class="text-2xl font-bold mt-4 text-white">Welcome Back</h1>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-1">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required
+                            class="input-field bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
+                            placeholder="Enter your username">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required
+                            class="input-field bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
+                            placeholder="Enter your password">
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-end">
+                    <a href="#" class="text-sm text-primary hover:text-secondary">Forgot password?</a>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="auth-btn w-full bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-lg px-5 py-2.5 text-center">
+                    Login <i class="fas fa-sign-in-alt ml-2"></i>
+                </button>
+                
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-700"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-gray-800 text-gray-400">New to VugarMedia?</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="register.html" class="inline-flex items-center text-primary hover:text-secondary text-sm font-medium">
+                        Create an account <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                // In a real app, you would send this to your backend API
+                const response = await simulateLoginAPI(username, password);
+                
+                if (response.success) {
+                    // Store user data in localStorage
+                    localStorage.setItem('user', JSON.stringify({
+                        username: response.user.username,
+                        loggedIn: true
+                    }));
+                    
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                } else {
+                    alert(response.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('An error occurred during login');
+            }
+        });
+
+        // Simulate API call (replace with real API call in production)
+        function simulateLoginAPI(username, password) {
+            return new Promise((resolve) => {
+                // Simulate network delay
+                setTimeout(() => {
+                    // Check if user exists in localStorage
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    const user = users.find(user => 
+                        user.username === username && user.password === password
+                    );
+                    
+                    if (user) {
+                        resolve({ 
+                            success: true,
+                            user: {
+                                username: user.username,
+                                // No email in simplified system
+                            }
+                        });
+                    } else {
+                        resolve({ success: false, message: 'Invalid username or password' });
+                    }
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>

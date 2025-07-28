@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore | VugarMedia</title>
+    <meta name="description" content="Discover premium video content on VugarMedia">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            font-family: 'Inter', sans-serif; /* Ensuring Inter font */
+        }
+        
+        .video-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem; /* Rounded corners */
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(109,40,217,0.5);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 0.75rem 0.75rem 0 0; /* Rounded top corners */
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .play-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .video-embed {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0.5rem; /* Rounded corners for the iframe */
+        }
+
+        /* Modal specific styles */
+        #videoModal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #videoModal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="text-light font-sans antialiased">
+    <!-- Navigation Bar -->
+    <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                    <i class="fas fa-play text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div id="authLinks" class="hidden md:flex items-center space-x-6">
+                <a href="explore.html" class="text-white font-medium">Explore</a>
+                <a href="membership.html" class="text-gray-300 hover:text-white transition">Membership</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">About</a>
+                
+                <div class="flex space-x-3 ml-4">
+                    <!-- Login/Register links (will be hidden when logged in) -->
+                    <a href="login.html" id="loginLink" class="px-4 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition">Login</a>
+                    <a href="register.html" id="registerLink" class="px-4 py-2 rounded-md bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 transition">Register</a>
+
+                    <!-- Logged-in elements (initially hidden) -->
+                    <span id="welcomeUser" class="text-white px-4 py-2 hidden"></span> 
+                    <button id="logoutButton" class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition hidden">Logout</button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-300 hover:text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Explore Premium Content</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">Discover our exclusive collection of high-quality videos</p>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="mb-8 flex flex-col md:flex-row gap-4">
+            <div class="relative flex-grow">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="text" class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-primary focus:border-primary" placeholder="Search videos...">
+            </div>
+            <select class="bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:ring-primary focus:border-primary">
+                <option>All Categories</option>
+                <option>Featured</option>
+                <option>Popular</option>
+                <option>New Releases</option>
+            </select>
+        </div>
+
+        <!-- Video Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Video Card 1 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store-na-phx-2.gofile.io/download/web/66addf66-02cd-4c6b-bc18-4a32fdd6471a/Horny%20Girl%20Records%20Herself%20and%20Takes%20a%20Monster.mp4', 'Unleashed Desires: Her Secret Recording! 😈🔥')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/thumbnail-1.jpg" alt="Unleashed Desires">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 24.5K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 1.2K</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Unleashed Desires: Her Secret Recording! 😈🔥</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 12:34</p>
+                </div>
+            </div>
+
+            <!-- Video Card 2 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store9.gofile.io/download/web/1cc562ea-326e-48a1-b7a0-1e4ab8471cbd/hot%20alied%20girl%20get%20fucuked%20so%20hard', 'Intense Pleasure: She Can\'t Get Enough! 🥵💦')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/img_20250723_215344-1.jpg" alt="Intense Pleasure">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 18.3K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 890</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Intense Pleasure: She Can't Get Enough! 🥵💦</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 8:45</p>
+                </div>
+            </div>
+
+            <!-- Video Card 3 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store-na-phx-2.gofile.io/download/web/0cd7860e-8c1c-43ec-b488-79e9f9221255/BIg%20ass%20bigger%20then%20the%20head', 'Curves That Hypnotize: Unbelievable Proportions! 🍑✨')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/thumbnaile.jpg" alt="Hypnotizing Curves">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 32.1K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 2.4K</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Curves That Hypnotize: Unbelievable Proportions! 🍑✨</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 15:22</p>
+                </div>
+            </div>
+
+            <!-- Video Card 4 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store2.gofile.io/download/web/9108775b-2734-4af5-8fe1-840cfde44e52/very%20hot%20girl%20get%20fucked%20so%20hard%20turn%20her%20face%20red%20as%20toamto', 'Blushing Beauty: A Fiery Encounter! 💋🌶️')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/hot.jpg" alt="Blushing Beauty">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 9.7K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 540</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Blushing Beauty: A Fiery Encounter! 💋🌶️</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 6:18</p>
+                </div>
+            </div>
+
+            <!-- Video Card 5 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store1.gofile.io/download/web/bb1f36eb-aa5e-49ac-8d99-4a4d9b38bc1c/the%20giant%20women.mp4', 'Towering Temptation: The Giantess Unleashed! 👑👠')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/giant.jpg" alt="Towering Temptation">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 15.1K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 700</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Towering Temptation: The Giantess Unleashed! 👑👠</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 10:05</p>
+                </div>
+            </div>
+
+            <!-- Video Card 6 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store3.gofile.io/download/web/4929b0ff-2501-4f22-b686-0f6b34837459/the%20giant%20women%202.mp4', 'Giantess Returns: More Power, More Pleasure! 💥🌟')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/giant2.jpg" alt="Giantess Returns">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 19.8K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 950</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Giantess Returns: More Power, More Pleasure! 💥🌟</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 11:30</p>
+                </div>
+            </div>
+
+            <!-- Video Card 7 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store3.gofile.io/download/web/3a780b5e-3e47-4058-9609-b46197af6b3f/mine%20loi.mp4', 'Her Rules, Your Pleasure: Unforgettable Moments! 😈🔗')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/min.jpg" alt="Her Rules">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 12.4K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 620</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Her Rules, Your Pleasure: Unforgettable Moments! 😈🔗</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 7:55</p>
+                </div>
+            </div>
+
+            <!-- Video Card 8 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store9.gofile.io/download/web/2fb88898-c415-4af7-b0ad-7f4b5e601712/bitch%20got%20brutall%20fucked%20by%20giant%20dick.mp4', 'Overwhelmed & Unleashed: A Brutal Encounter! 🌊⛓️')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/bitch.jpg" alt="Overwhelmed">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 28.9K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 1.8K</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Overwhelmed & Unleashed: A Brutal Encounter! 🌊⛓️</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 14:10</p>
+                </div>
+            </div>
+
+            <!-- Video Card 9 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store3.gofile.io/download/web/08b108cf-7c7b-4969-b395-352181162e50/she%20love%20to%20ride%20the%20diick.mp4', 'Mastering the Ride: Her Passionate Performance! 🐎💨')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/ride.jpg" alt="Mastering the Ride">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 21.0K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 1.1K</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Mastering the Ride: Her Passionate Performance! 🐎💨</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 9:20</p>
+                </div>
+            </div>
+
+            <!-- Video Card 10 -->
+            <div class="video-card rounded-xl border border-gray-700 overflow-hidden">
+                <div class="video-thumbnail cursor-pointer" onclick="openVideoModal('https://store-na-phx-2.gofile.io/download/web/2ea5e43d-a588-4447-ab98-a4beaa865044/bbc.mp4', 'Unleash the Power: Experience the Grand Finale! 💪🔥')">
+                    <img src="https://roughcrave.wordpress.com/wp-content/uploads/2025/07/gradnny.jpg" alt="Unleash the Power">
+                    <div class="play-button">
+                        <i class="fas fa-play text-white text-xl"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> 16.7K</span>
+                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> 800</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-1">Unleash the Power: Experience the Grand Finale! 💪🔥</h3>
+                    <p class="text-sm text-gray-400">By CreatorName • 13:00</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="flex justify-center mt-10">
+            <nav class="inline-flex rounded-md shadow">
+                <a href="#" class="px-3 py-2 rounded-l-md bg-gray-800 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">1</a>
+                <a href="#" class="px-4 py-2 bg-primary text-white border-l border-gray-700">2</a>
+                <a href="#" class="px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">3</a>
+                <a href="#" class="px-3 py-2 rounded-r-md bg-gray-800 text-gray-300 hover:bg-gray-700 border-l border-gray-700">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </nav>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden">
+        <div class="relative w-full max-w-4xl">
+            <button onclick="closeVideoModal()" class="absolute -top-10 right-0 text-white hover:text-primary text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-embed rounded-lg overflow-hidden">
+                <iframe id="videoFrame" src="" allowfullscreen></iframe>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <h3 id="videoTitle" class="text-xl font-bold text-white"></h3>
+                <div class="flex space-x-3">
+                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white">
+                        <i class="fas fa-share"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/80 border-t border-gray-800 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">VugarMedia</span>
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                        Premium video sharing platform for exclusive content.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="explore.html" class="text-gray-400 hover:text-white transition">Explore</a></li>
+                        <li><a href="membership.html" class="text-gray-400 hover:text-white transition">Membership</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                        <li><a href="https://t.me/+Xa9CQA1GNS43MDM1" target="_blank" class="text-gray-400 hover:text-white transition">Telegram</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2023 VugarMedia. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Video modal functions
+        function openVideoModal(url, title) {
+            // The gofile.io links are direct MP4 files, which iframes can play.
+            // However, for better embedding control and to ensure they play correctly
+            // across all browsers within an iframe, sometimes a direct embed link
+            // or a video player library is needed. For now, direct MP4 URL in iframe src.
+            document.getElementById('videoFrame').src = url;
+            document.getElementById('videoTitle').textContent = title;
+            document.getElementById('videoModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        }
+        
+        function closeVideoModal() {
+            document.getElementById('videoFrame').src = ''; // Stop video playback
+            document.getElementById('videoModal').classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideoModal();
+            }
+        });
+        
+        // Login/logout functionality (same as index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation bar elements
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const welcomeUser = document.getElementById('welcomeUser');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Check if user is logged in
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (user && user.loggedIn) {
+                // User is logged in:
+                // Hide login/register in navbar
+                if (loginLink) loginLink.classList.add('hidden');
+                if (registerLink) registerLink.classList.add('hidden');
+                
+                // Show welcome message and logout button in navbar
+                if (welcomeUser) {
+                    welcomeUser.textContent = `Welcome, ${user.username}!`;
+                    welcomeUser.classList.remove('hidden');
+                }
+                if (logoutButton) logoutButton.classList.remove('hidden');
+
+            } else {
+                // User is NOT logged in:
+                // Ensure login/register are visible in navbar
+                if (loginLink) loginLink.classList.remove('hidden');
+                if (registerLink) registerLink.classList.remove('hidden');
+
+                // Hide welcome message and logout button in navbar
+                if (welcomeUser) welcomeUser.classList.add('hidden');
+                if (logoutButton) logoutButton.classList.add('hidden');
+            }
+
+            // Add logout functionality
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
