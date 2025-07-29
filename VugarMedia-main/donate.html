@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support VugarMedia | Instant Impact & Rewards</title>
+    <meta name="description" content="Make an instant impact. Choose a small contribution to keep VugarMedia ad-free and thriving.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        accentYellow: '#facc15',
+                        successGreen: '#22c55e',
+                        cardBg: 'rgba(23, 23, 39, 0.7)',
+                        cardBorder: '#374151',
+                        specialRed: '#ef4444',
+                        neonPink: '#ff00ff',
+                        neonBlue: '#00ffff',
+                        // Custom colors for the VugarMedia text logo (matching screenshot)
+                        vugarPurple: '#6d28d9',
+                        mediaWhite: '#f8fafc',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #6d28d9, 0 0 20px #6d28d9' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #9333ea, 0 0 40px #9333ea' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Game-inspired UI styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            overflow-x: hidden;
+        }
+        
+        /* Custom style for the VugarMedia text logo (matching screenshot) */
+        .vugar-logo-text .vugar {
+            color: #6d28d9; /* vugarPurple */
+            font-weight: bold;
+        }
+        .vugar-logo-text .media {
+            color: #f8fafc; /* mediaWhite */
+            font-weight: bold;
+        }
+
+        /* Animated stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: var(--opacity); }
+        }
+        
+        .donate-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.85) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 
+                        0 0 50px rgba(109, 40, 217, 0.2);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donate-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.1) 0%, 
+                                      transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .contribution-option {
+            background-color: rgba(23, 23, 39, 0.7);
+            border: 1px solid #374151;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .contribution-option:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(109,40,217,0.6);
+            border-color: var(--tw-colors-primary);
+            background-color: rgba(41,37,79,0.9);
+        }
+        
+        .contribution-option.active {
+            border-color: var(--tw-colors-accentYellow);
+            box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.6), 
+                        0 15px 40px rgba(109,40,217,0.7);
+            transform: scale(1.03);
+            animation: pulse-slow 2s infinite;
+        }
+        
+        .contribution-option::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.15) 0%, 
+                                      transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+        
+        .contribution-option:hover::before {
+            opacity: 1;
+        }
+        
+        .price-display {
+            font-size: 2.75rem;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(109, 40, 217, 0.7);
+        }
+        
+        /* Game UI elements */
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            background: rgba(55, 65, 81, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, 
+                                      #6d28d9, 
+                                      #9333ea, 
+                                      #6d28d9);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: progressGlow 2s ease infinite;
+        }
+        
+        @keyframes progressGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .currency-toggle-group {
+            display: inline-flex;
+            background-color: rgba(15, 23, 42, 0.7);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 
+                        0 0 15px rgba(109, 40, 217, 0.3);
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+        }
+        
+        .currency-toggle-label {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-align: center;
+            color: rgba(156, 163, 175, 0.7);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .currency-toggle-label:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.05);
+        }
+        
+        .currency-toggle-input:checked + .currency-toggle-label {
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.8), 
+                                      rgba(147, 51, 234, 0.8));
+            color: white;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        visibility 0.4s;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, 
+                                      rgba(15,23,42,0.98) 0%, 
+                                      rgba(41,37,79,0.95) 100%);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7),
+                        0 0 50px rgba(109, 40, 217, 0.3);
+            transform: translateY(-30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            border: 2px solid rgba(109, 40, 217, 0.5);
+            overflow: hidden;
+            /* Added for better mobile fit */
+            max-height: 95vh; /* Limit modal height to viewport height */
+            overflow-y: auto; /* Enable scrolling if content overflows */
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(147, 51, 234, 0.1) 0%, 
+                                      transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        .payment-method-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+            border-radius: 0.75rem;
+            font-weight: 700;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.8), 
+                                      rgba(147, 51, 234, 0.8));
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-method-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(109,40,217,0.6);
+        }
+        
+        .payment-method-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                                      rgba(255, 255, 255, 0.3) 0%, 
+                                      transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .payment-method-button:hover::after {
+            opacity: 1;
+        }
+        
+        .payment-method-button.active {
+            border: 3px solid var(--tw-colors-accentYellow);
+            box-shadow: 0 0 0 6px rgba(250, 204, 21, 0.7),
+                        0 10px 30px rgba(109,40,217,0.7);
+            animation: pulse-slow 1.5s infinite;
+        }
+        
+        /* UPDATED QR CODE IMAGE SIZING FOR COMPACTNESS */
+        .qr-code-img {
+            width: 80%; /* Start with a relative width */
+            max-width: 180px; /* Limit maximum size */
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4),
+                        0 0 20px rgba(109, 40, 217, 0.4);
+            border: 2px solid rgba(109, 40, 217, 0.5);
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 1.25rem; /* Reduced from 1.5rem */
+        }
+        
+        @media (max-width: 480px) { /* Adjust for smaller mobile screens */
+            .qr-code-img {
+                max-width: 140px; /* Even smaller on tiny screens */
+            }
+        }
+        
+        /* Confetti effect */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+        
+        /* Floating coins animation */
+        .floating-coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23facc15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>');
+            background-size: contain;
+            opacity: 0;
+            z-index: -1;
+            animation: float-coin 8s linear infinite;
+        }
+        
+        @keyframes float-coin {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+                left: 10%;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg);
+                opacity: 0;
+                left: 90%;
+            }
+        }
+        
+        /* Notification message */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.9), 
+                                      rgba(147, 51, 234, 0.9));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            min-width: 200px;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        /* Home button */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+            background: linear-gradient(45deg, 
+                                      rgba(109, 40, 217, 0.9), 
+                                      rgba(147, 51, 234, 0.9));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            animation: pulse-slow 2s infinite;
+        }
+        
+        .home-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.6);
+        }
+
+        /* Mobile menu styles (consistent across pages) */
+        .mobile-menu-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50; /* Above other content */
+        }
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 40; /* Below panel, above content */
+        }
+        .mobile-menu-overlay.open {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Payment method button consistency with membership.html */
+        .payment-method-button {
+            background-color: rgba(23, 23, 39, 0.9); /* cardBg with opacity */
+            border: 1px solid #374151; /* cardBorder */
+            transition: all 0.2s ease-in-out;
+        }
+        .payment-method-button:hover {
+            border-color: #6d28d9; /* primary color */
+            box-shadow: 0 0 15px rgba(109, 40, 217, 0.3);
+            transform: translateY(-3px);
+        }
+        .payment-method-button.active {
+            border-color: #facc15; /* accentYellow color */
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .contribution-option {
+                min-height: 180px;
+                padding: 1rem;
+            }
+            
+            .price-display {
+                font-size: 2rem;
+            }
+            
+            .modal-content {
+                padding: 2rem; /* Reduced padding on smaller screens */
+            }
+        }
+    </style>
+</head>
+<body class="text-light font-sans antialiased min-h-screen flex flex-col">
+    <div class="stars" id="stars"></div>
+    
+    <div id="floatingCoins"></div>
+    
+    <header class="bg-dark text-white p-4 shadow-lg sticky top-0 z-30">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold vugar-logo-text flex items-center">
+                <span class="vugar">Vugar</span><span class="media">Media</span>
+            </a>
+            
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="explore.html" class="hover:text-primary transition duration-300">Explore</a>
+                <a href="pro.html" class="hover:text-primary transition duration-300">Go Pro</a>
+                <a href="donate.html" class="hover:text-primary transition duration-300">Donate</a>
+                <a href="login.html" class="hover:text-primary transition duration-300 logged-out">Login</a>
+                
+                <div class="relative logged-in hidden">
+                    <button id="profileDropdown" class="flex items-center space-x-2 focus:outline-none hover:text-primary transition duration-300">
+                        <i class="fas fa-user-circle text-xl"></i>
+                        <span id="usernameDisplay"></span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="profileMenu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden z-40">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">My Account</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">Settings</a>
+                        <button id="logoutButtonDesktop" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">Logout</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center">
+                <button id="mobileMenuButton" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobileMenuPanel" class="mobile-menu-panel fixed inset-y-0 right-0 w-64 bg-gray-900 p-6 shadow-xl transform translate-x-full md:hidden z-50">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold vugar-logo-text"><span class="vugar">Vugar</span><span class="media">Media</span></h2>
+            <button id="closeMobileMenuButton" class="text-white focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-4">
+            <a href="explore.html" class="text-white hover:text-primary transition duration-300 text-lg">Explore</a>
+            <a href="pro.html" class="text-white hover:text-primary transition duration-300 text-lg">Go Pro</a>
+            <a href="donate.html" class="text-white hover:text-primary transition duration-300 text-lg">Donate</a>
+            <a href="login.html" class="text-white hover:text-primary transition duration-300 text-lg logged-out">Login</a>
+            
+            <div class="flex items-center space-x-2 logged-in hidden">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span id="usernameDisplayMobile" class="text-lg"></span>
+            </div>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">My Account</a>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">Settings</a>
+            <button id="logoutButtonMobile" class="text-left text-red-400 hover:text-red-300 transition duration-300 text-lg logged-in hidden">Logout</button>
+        </nav>
+    </div>
+    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 md:hidden z-40"></div>
+
+    <main class="flex-grow py-16 md:py-24 flex flex-col items-center justify-center relative">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto donate-card p-8 md:p-10 text-center relative">
+                <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+                
+                <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent animate-glow">
+                    Power Up VugarMedia!
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Your support unlocks exclusive perks and fuels our creative engine!
+                </p>
+
+                <div class="mb-12">
+                    <h2 class="text-xl font-semibold text-accentYellow mb-3 animate-float">
+                        <i class="fas fa-bolt mr-2"></i> Community Goal: 75% Complete!
+                    </h2>
+                    <div class="progress-container mb-2">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        <span class="font-bold text-white">3,428</span> supporters of <span class="font-bold text-white">5,000</span> goal
+                    </p>
+                </div>
+
+                <div class="flex justify-center mb-10">
+                    <div class="currency-toggle-group" id="currencyToggleGroup">
+                        <input type="radio" id="currencyUsd" name="currency" value="USD" checked class="currency-toggle-input hidden">
+                        <label for="currencyUsd" class="currency-toggle-label">
+                            <span class="text-xl">$ USD</span>
+                        </label>
+                        <input type="radio" id="currencyInr" name="currency" value="INR" class="currency-toggle-input hidden">
+                        <label for="currencyInr" class="currency-toggle-label">
+                            <span class="text-xl">₹ INR</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="contribution-option" data-usd="0.99" data-inr="10" data-name="Power Boost">
+                        <div>
+                            <i class="fas fa-bolt text-accentYellow text-4xl mb-4 animate-float"></i>
+                            <h3 class="text-2xl font-bold mb-2">Power Boost</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$0.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +10 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <div class="contribution-option" data-usd="1.99" data-inr="29" data-name="Ad Shield">
+                        <div>
+                            <i class="fas fa-shield-alt text-green-400 text-4xl mb-4 animate-float" style="animation-delay: 0.2s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Ad Shield</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$1.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +25 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <div class="contribution-option" data-usd="4.99" data-inr="49" data-name="Content Hero">
+                        <div>
+                            <i class="fas fa-star text-yellow-300 text-4xl mb-4 animate-float" style="animation-delay: 0.4s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Content Hero</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$4.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +100 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+
+                    <div class="contribution-option" data-usd="9.99" data-inr="99" data-name="Legendary Supporter">
+                        <div>
+                            <i class="fas fa-crown text-purple-300 text-4xl mb-4 animate-float" style="animation-delay: 0.6s"></i>
+                            <h3 class="text-2xl font-bold mb-2">Legendary</h3>
+                            <p class="price-display font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                                <span class="currency-price">$9.99</span>
+                            </p>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4">
+                            +250 Energy Points
+                        </p>
+                        <button class="select-button w-full px-6 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-bold hover:opacity-90 transition transform hover:scale-105">
+                            Select
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-gray-400 text-lg mb-4">
+                        Or enter custom amount:
+                    </p>
+                    <div class="flex items-center justify-center space-x-2 mb-4">
+                        <span id="customCurrencySymbol" class="text-2xl text-gray-300">$</span>
+                        <input type="number" id="customAmountInput" placeholder="Amount" min="1" class="input-field bg-gray-800 border border-gray-700 text-white text-lg rounded-lg focus:ring-primary focus:border-primary block w-40 p-2.5 text-center">
+                    </div>
+                    <button id="selectCustomAmountButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-gray-700 to-gray-800 text-white font-medium hover:bg-gray-600 transition transform hover:scale-105">
+                        Custom Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <div class="flex justify-between items-center mb-6">
+                <button id="switchPaymentMethodBtn" class="text-gray-400 hover:text-primary transition-colors duration-200 text-xl md:text-2xl mr-4" title="Switch Payment Method">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <h2 class="text-2xl md:text-3xl font-bold text-white flex-grow text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Complete Your Support
+                </h2>
+                <button id="homeButtonModal" class="text-gray-400 hover:text-primary transition-colors duration-200 text-xl md:text-2xl ml-4 mr-2" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button id="closePaymentModal" class="text-gray-400 hover:text-white transition-colors duration-200 text-xl md:text-2xl" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="flex flex-col items-center">
+                <i class="fas fa-gem text-accentYellow text-5xl mb-4 animate-float"></i>
+                <p class="text-lg text-gray-300 mb-6">
+                    You're about to make an impact with<br>
+                    <span id="modalSelectedName" class="text-accentYellow font-bold text-xl"></span> for <span id="modalSelectedAmount" class="font-bold text-accentYellow text-xl"></span>
+                </p>
+                
+                <div id="paymentMethodSelection" class="w-full max-w-md mx-auto mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-accentYellow">Choose Payment Method</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button id="selectUpiButton" class="payment-method-button">
+                            <i class="fas fa-indian-rupee-sign mr-2"></i> UPI
+                        </button>
+                        <button id="selectPaypalButton" class="payment-method-button">
+                            <i class="fab fa-paypal mr-2"></i> PayPal
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="paymentDetailsSection" class="hidden w-full max-w-md mx-auto">
+                    <div id="upiDetails" class="hidden flex flex-col items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white mb-3">Scan & Pay (UPI)</h3>
+                        <img src="assets/img/upi.png" alt="UPI QR Code" class="qr-code-img mb-3">
+                        <div class="flex items-center bg-gray-800 rounded-lg px-4 py-2 border border-gray-700">
+                            <span class="text-primary font-mono select-all text-lg">bharti00077-2@okaxis</span>
+                            <button onclick="copyToClipboard('bharti00077-2@okaxis')" class="ml-2 text-gray-400 hover:text-white">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-1">(Tap to copy)</p>
+                    </div>
+                    
+                    <div id="paypalDetails" class="hidden flex flex-col items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white mb-3">PayPal Payment</h3>
+                        <img src="assets/img/paypal.png" alt="PayPal QR Code" class="qr-code-img mb-3">
+                        <a href="https://www.paypal.me/PawanKumar35438" target="_blank" class="text-primary hover:text-secondary font-medium select-all text-lg mb-1">
+                            PayPal.me/PawanKumar35438 <i class="fas fa-external-link-alt ml-1 text-sm"></i>
+                        </a>
+                        <p class="text-gray-500 text-xs mt-1">(Tap to copy & open)</p>
+                        <p class="text-gray-300 text-sm mt-3 leading-tight max-w-xs text-center">
+                            Please include your <strong class="text-accentYellow">VugarMedia Username</strong> in notes.
+                        </p>
+                    </div>
+                    
+                    <button id="confirmPaymentButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-successGreen to-green-500 text-white font-bold mt-4 hover:opacity-90 transition transform hover:scale-105">
+                        <i class="fas fa-check-circle mr-2"></i> Payment Sent (I've Paid)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create stars background
+            createStars();
+            
+            // Create floating coins
+            createFloatingCoins();
+            
+            // DOM elements
+            const currencyRadios = document.querySelectorAll('input[name="currency"]');
+            const customAmountInput = document.getElementById('customAmountInput');
+            const customCurrencySymbol = document.getElementById('customCurrencySymbol');
+            const contributionOptions = document.querySelectorAll('.contribution-option');
+            const selectCustomAmountButton = document.getElementById('selectCustomAmountButton');
+            const paymentModal = document.getElementById('paymentModal');
+            const closePaymentModalButton = document.getElementById('closePaymentModal');
+            const homeButtonModal = document.getElementById('homeButtonModal');
+            const modalSelectedName = document.getElementById('modalSelectedName');
+            const modalSelectedAmount = document.getElementById('modalSelectedAmount');
+            
+            const paymentMethodSelection = document.getElementById('paymentMethodSelection');
+            const selectUpiButton = document.getElementById('selectUpiButton');
+            const selectPaypalButton = document.getElementById('selectPaypalButton');
+            const paymentDetailsSection = document.getElementById('paymentDetailsSection');
+            const upiDetails = document.getElementById('upiDetails');
+            const paypalDetails = document.getElementById('paypalDetails');
+            const switchPaymentMethodBtn = document.getElementById('switchPaymentMethodBtn');
+            
+            const confirmPaymentButton = document.getElementById('confirmPaymentButton');
+            const notification = document.getElementById('notification');
+            const confettiContainer = document.getElementById('confettiContainer');
+            
+            let currentCurrency = 'USD';
+            let selectedAmount = 0;
+            let selectedName = '';
+            
+            // UI Logic (Consistent across pages - copied from explore.html and login.html)
+            const profileDropdown = document.getElementById('profileDropdown');
+            const profileMenu = document.getElementById('profileMenu');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
+            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+
+            // Toggle Profile Dropdown
+            if (profileDropdown) {
+                profileDropdown.addEventListener('click', function() {
+                    if (profileMenu) profileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (profileDropdown && profileMenu && !profileDropdown.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.add('hidden');
+                }
+            });
+
+            // Update UI based on login status (Global function or copy/paste if not global)
+            window.updateUI = function() {
+                const username = localStorage.getItem('username');
+                const isLoggedIn = !!username;
+                const loggedOutElements = document.querySelectorAll('.logged-out');
+                const loggedInElements = document.querySelectorAll('.logged-in');
+
+                if (isLoggedIn) {
+                    loggedOutElements.forEach(el => el.classList.add('hidden'));
+                    loggedInElements.forEach(el => el.classList.remove('hidden'));
+                    const usernameDisplay = document.getElementById('usernameDisplay');
+                    const usernameDisplayMobile = document.getElementById('usernameDisplayMobile');
+                    if (usernameDisplay) usernameDisplay.textContent = username;
+                    if (usernameDisplayMobile) usernameDisplayMobile.textContent = username;
+                } else {
+                    loggedOutElements.forEach(el => el.classList.remove('hidden'));
+                    loggedInElements.forEach(el => el.classList.add('hidden'));
+                }
+            }
+
+            // Logout function (Global for now)
+            window.logout = function() {
+                localStorage.removeItem('username');
+                localStorage.removeItem('user_pro'); // Clear pro status on logout
+                updateUI();
+                window.location.href = 'index.html'; // Redirect after logout
+            }
+
+            // Open Mobile Menu
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Close Mobile Menu
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Close Mobile Menu when clicking overlay
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Logout Buttons
+            if (logoutButtonDesktop) {
+                logoutButtonDesktop.addEventListener('click', logout);
+            }
+            if (logoutButtonMobile) {
+                logoutButtonMobile.addEventListener('click', logout);
+            }
+
+            // --- Donation Page Specific Logic (UPDATED) ---
+
+            // Create stars for background
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                const starCount = 100;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random properties
+                    const size = Math.random() * 3;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const opacity = Math.random() * 0.8 + 0.1;
+                    const duration = Math.random() * 5 + 3;
+                    
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${posX}%`;
+                    star.style.top = `${posY}%`;
+                    star.style.opacity = opacity;
+                    star.style.setProperty('--opacity', opacity);
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Create floating coins animation
+            function createFloatingCoins() {
+                const coinsContainer = document.getElementById('floatingCoins');
+                const coinCount = 10;
+                
+                for (let i = 0; i < coinCount; i++) {
+                    const coin = document.createElement('div');
+                    coin.className = 'floating-coin';
+                    
+                    // Random properties
+                    const size = Math.random() * 20 + 20;
+                    const delay = Math.random() * 5;
+                    const duration = Math.random() * 5 + 8;
+                    
+                    coin.style.width = `${size}px`;
+                    coin.style.height = `${size}px`;
+                    coin.style.animationDuration = `${duration}s`;
+                    coin.style.animationDelay = `${delay}s`;
+                    coin.style.left = `${Math.random() * 90 + 5}%`;
+                    
+                    coinsContainer.appendChild(coin);
+                }
+            }
+            
+            // Create confetti effect
+            function createConfetti() {
+                confettiContainer.innerHTML = '';
+                const colors = ['#6d28d9', '#9333ea', '#facc15', '#22c55e', '#ef4444'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random properties
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const size = Math.random() * 10 + 5;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const rotation = Math.random() * 360;
+                    const animationDuration = Math.random() * 3 + 2;
+                    
+                    confetti.style.backgroundColor = color;
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.left = `${posX}%`;
+                    confetti.style.top = `${posY}%`;
+                    confetti.style.transform = `rotate(${rotation}deg)`;
+                    confetti.style.animation = `fall ${animationDuration}s ease-in forwards`;
+                    
+                    confettiContainer.appendChild(confetti);
+                }
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confettiContainer.innerHTML = '';
+                }, 3000);
+            }
+            
+            // Update currency display
+            function updateCurrencyDisplay() {
+                contributionOptions.forEach(option => {
+                    const priceDisplaySpan = option.querySelector('.currency-price');
+                    const usdAmount = option.dataset.usd;
+                    const inrAmount = option.dataset.inr;
+                    
+                    priceDisplaySpan.textContent = currentCurrency === 'USD' ? `$${usdAmount}` : `₹${inrAmount}`;
+                });
+                
+                customCurrencySymbol.textContent = currentCurrency === 'USD' ? '$' : '₹';
+            }
+            
+            // Set active contribution option
+            function setActiveOption(activeOption) {
+                contributionOptions.forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                if (activeOption) {
+                    activeOption.classList.add('active');
+                }
+            }
+            
+            // Show notification
+            function showNotification(message, isSuccess = true) {
+                notification.textContent = message;
+                notification.className = 'notification'; // Reset classes
+                notification.classList.add(isSuccess ? 'bg-successGreen' : 'bg-specialRed');
+                notification.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 3000);
+            }
+            
+            // Copy to clipboard
+            window.copyToClipboard = function(text) { // Made global for onclick in HTML
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Copied to clipboard!');
+                }).catch(err => {
+                    showNotification('Failed to copy', false);
+                });
+            }
+            
+            // Currency change event
+            currencyRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentCurrency = this.value;
+                    updateCurrencyDisplay();
+                });
+            });
+            
+            // Contribution option click event (for active state, not opening modal)
+            contributionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    setActiveOption(this);
+                    selectedName = this.dataset.name;
+                    selectedAmount = currentCurrency === 'USD' ? parseFloat(this.dataset.usd) : parseFloat(this.dataset.inr);
+                    
+                    // Clear custom input when selecting preset option
+                    customAmountInput.value = '';
+                });
+            });
+            
+            // Custom amount input event
+            customAmountInput.addEventListener('input', function() {
+                setActiveOption(null);
+                selectedAmount = parseFloat(this.value) || 0;
+                selectedName = 'Custom Support';
+            });
+            
+            // Select custom amount button
+            selectCustomAmountButton.addEventListener('click', function() {
+                if (selectedAmount <= 0 || isNaN(selectedAmount)) {
+                    showNotification('Please enter a valid amount', false);
+                    return;
+                }
+                openPaymentModal();
+            });
+            
+            // Contribution option select buttons
+            document.querySelectorAll('.select-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent card's click event from firing twice
+                    const option = this.closest('.contribution-option');
+                    setActiveOption(option);
+                    selectedName = option.dataset.name;
+                    selectedAmount = currentCurrency === 'USD' ? parseFloat(option.dataset.usd) : parseFloat(option.dataset.inr);
+                    openPaymentModal();
+                });
+            });
+            
+            // Open payment modal
+            function openPaymentModal() {
+                if (!selectedName || selectedAmount <= 0) {
+                    showNotification('Please select an amount first', false);
+                    return;
+                }
+                
+                modalSelectedName.textContent = selectedName;
+                modalSelectedAmount.textContent = currentCurrency === 'USD' ? `$${selectedAmount.toFixed(2)}` : `₹${selectedAmount.toFixed(2)}`; // Format to 2 decimal places
+                
+                // Show payment method selection and hide details
+                paymentMethodSelection.classList.remove('hidden');
+                paymentDetailsSection.classList.add('hidden');
+                switchPaymentMethodBtn.classList.add('hidden'); // Hide switch button initially
+                
+                // Reset active button state
+                selectUpiButton.classList.remove('active');
+                selectPaypalButton.classList.remove('active');
+
+                paymentModal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+
+            // Function to show specific payment details (UPI/PayPal)
+            function showPaymentDetails(method) {
+                paymentMethodSelection.classList.add('hidden'); // Hide method selection
+                paymentDetailsSection.classList.remove('hidden'); // Show details container
+                switchPaymentMethodBtn.classList.remove('hidden'); // Show switch button
+                
+                upiDetails.classList.add('hidden');
+                paypalDetails.classList.add('hidden');
+                confirmPaymentButton.classList.remove('hidden'); // Show confirm button
+
+                if (method === 'upi') {
+                    upiDetails.classList.remove('hidden');
+                    selectUpiButton.classList.add('active');
+                    selectPaypalButton.classList.remove('active');
+                } else if (method === 'paypal') {
+                    paypalDetails.classList.remove('hidden');
+                    selectPaypalButton.classList.add('active');
+                    selectUpiButton.classList.remove('active');
+                }
+            }
+
+            // Close modal functionality
+            closePaymentModalButton.addEventListener('click', function() {
+                paymentModal.classList.remove('show');
+                document.body.style.overflow = 'auto'; // Re-enable background scrolling
+            });
+
+            // Home button within modal
+            homeButtonModal.addEventListener('click', function() {
+                paymentModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+                window.location.href = 'index.html'; // Redirect to home
+            });
+            
+            // Select UPI payment
+            selectUpiButton.addEventListener('click', function() {
+                showPaymentDetails('upi');
+            });
+            
+            // Select PayPal payment
+            selectPaypalButton.addEventListener('click', function() {
+                showPaymentDetails('paypal');
+            });
+            
+            // Event listener for "Switch Payment Method" button
+            switchPaymentMethodBtn.addEventListener('click', function() {
+                openPaymentModal(); // Re-open to selection state
+            });
+
+            // Confirm payment button
+            confirmPaymentButton.addEventListener('click', function() {
+                createConfetti();
+                showNotification('Thank you for your support!');
+                paymentModal.classList.remove('show');
+                document.body.style.overflow = 'auto'; // Re-enable background scrolling
+                
+                // Reset selection
+                setActiveOption(null);
+                selectedAmount = 0;
+                selectedName = '';
+                customAmountInput.value = '';
+            });
+
+            // Close modal if clicked outside
+            if (paymentModal) {
+                paymentModal.addEventListener('click', function(event) {
+                    if (event.target === paymentModal) {
+                        paymentModal.classList.remove('show');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+            
+            // Initial UI update call
+            updateUI();
+            updateCurrencyDisplay();
+        });
+    </script>
+</body>
+</html>

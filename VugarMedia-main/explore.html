@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore | VugarMedia</title>
+    <meta name="description" content="Discover premium video content on VugarMedia">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        donateRed: '#ef4444',
+                        // Custom colors for the VugarMedia text logo (matching screenshot)
+                        vugarPurple: '#6d28d9', 
+                        mediaWhite: '#f8fafc', 
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            font-family: 'Inter', sans-serif; /* Ensuring Inter font */
+        }
+        
+        /* Custom style for the VugarMedia text logo (matching screenshot) */
+        .vugar-logo-text .vugar {
+            color: #6d28d9; /* vugarPurple */
+            font-weight: bold;
+        }
+        .vugar-logo-text .media {
+            color: #f8fafc; /* mediaWhite */
+            font-weight: bold;
+        }
+
+        /* Styles for mobile menu */
+        .mobile-menu-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50; /* Above other content */
+        }
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 40; /* Below panel, above content */
+        }
+        .mobile-menu-overlay.open {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Video card styles */
+        .video-card {
+            position: relative;
+            background-color: rgba(23, 23, 39, 0.7); /* cardBg with opacity */
+            border-color: #374151; /* cardBorder */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            overflow: hidden; /* Ensures rounded corners clip content */
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+        .video-thumbnail:hover img {
+            transform: scale(1.05);
+        }
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(109, 40, 217, 0.8); /* primary color with opacity */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none; /* Allows click to pass through to thumbnail */
+        }
+        .video-thumbnail:hover .play-button {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <header class="bg-dark text-white p-4 shadow-lg sticky top-0 z-30">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold vugar-logo-text flex items-center">
+                <span class="vugar">Vugar</span><span class="media">Media</span>
+            </a>
+            
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="explore.html" class="hover:text-primary transition duration-300">Explore</a>
+                <a href="pro.html" class="hover:text-primary transition duration-300">Go Pro</a>
+                <a href="donate.html" class="hover:text-primary transition duration-300">Donate</a>
+                <a href="#" class="hover:text-primary transition duration-300 logged-out">Login</a>
+                
+                <div class="relative logged-in hidden">
+                    <button id="profileDropdown" class="flex items-center space-x-2 focus:outline-none hover:text-primary transition duration-300">
+                        <i class="fas fa-user-circle text-xl"></i>
+                        <span id="usernameDisplay"></span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="profileMenu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden z-40">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">My Account</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">Settings</a>
+                        <button id="logoutButtonDesktop" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">Logout</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center">
+                <button id="mobileMenuButton" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobileMenuPanel" class="mobile-menu-panel fixed inset-y-0 right-0 w-64 bg-gray-900 p-6 shadow-xl transform translate-x-full md:hidden z-50">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold vugar-logo-text"><span class="vugar">Vugar</span><span class="media">Media</span></h2>
+            <button id="closeMobileMenuButton" class="text-white focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-4">
+            <a href="explore.html" class="text-white hover:text-primary transition duration-300 text-lg">Explore</a>
+            <a href="pro.html" class="text-white hover:text-primary transition duration-300 text-lg">Go Pro</a>
+            <a href="donate.html" class="text-white hover:text-primary transition duration-300 text-lg">Donate</a>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-out">Login</a>
+            
+            <div class="flex items-center space-x-2 logged-in hidden">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span id="usernameDisplayMobile" class="text-lg"></span>
+            </div>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">My Account</a>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">Settings</a>
+            <button id="logoutButtonMobile" class="text-left text-red-400 hover:text-red-300 transition duration-300 text-lg logged-in hidden">Logout</button>
+        </nav>
+    </div>
+    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 md:hidden z-40"></div>
+
+
+    <main class="container mx-auto p-4 md:p-8">
+        <h1 class="text-4xl font-extrabold text-white mb-8 text-center md:text-left">Explore Videos</h1>
+
+        <section class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+            <div class="flex flex-wrap gap-4 items-center w-full md:w-auto">
+                <label for="categoryFilter" class="text-gray-300">Category:</label>
+                <select id="categoryFilter" class="bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:ring-primary focus:border-primary">
+                    </select>
+            </div>
+            </section>
+
+        <section id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            </section>
+    </main>
+
+    <footer class="bg-dark text-gray-400 p-8 mt-12">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4 vugar-logo-text"><span class="vugar">Vugar</span><span class="media">Media</span></h3>
+                <p class="text-sm">Exclusive content for a private audience. Dive deep into unique experiences.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="explore.html" class="hover:text-primary transition duration-300">Explore</a></li>
+                    <li><a href="pro.html" class="hover:text-primary transition duration-300">Go Pro</a></li>
+                    <li><a href="donate.html" class="hover:text-primary transition duration-300">Donate</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Connect</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-primary transition duration-300"><i class="fab fa-telegram mr-2"></i> Telegram</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300"><i class="fas fa-envelope mr-2"></i> Contact Us</a></li>
+                </ul>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-primary transition duration-300"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition duration-300"><i class="fab fa-instagram text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+            &copy; 2025 VugarMedia. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Existing UI Logic (Profile Dropdown, Mobile Menu, Logout) ---
+            const profileDropdown = document.getElementById('profileDropdown');
+            const profileMenu = document.getElementById('profileMenu');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
+            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+            
+            // --- Video specific elements ---
+            const videoGrid = document.getElementById('videoGrid');
+            const categoryFilter = document.getElementById('categoryFilter');
+
+            // Toggle Profile Dropdown
+            if (profileDropdown) {
+                profileDropdown.addEventListener('click', function() {
+                    if (profileMenu) profileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (profileDropdown && profileMenu && !profileDropdown.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.add('hidden');
+                }
+            });
+
+            // Update UI based on login status
+            function updateUI() {
+                const username = localStorage.getItem('username');
+                const isLoggedIn = !!username; // Checks if username exists (true/false)
+                const loggedOutElements = document.querySelectorAll('.logged-out');
+                const loggedInElements = document.querySelectorAll('.logged-in');
+
+                if (isLoggedIn) {
+                    loggedOutElements.forEach(el => el.classList.add('hidden'));
+                    loggedInElements.forEach(el => el.classList.remove('hidden'));
+                    const usernameDisplay = document.getElementById('usernameDisplay');
+                    const usernameDisplayMobile = document.getElementById('usernameDisplayMobile');
+                    if (usernameDisplay) usernameDisplay.textContent = username;
+                    if (usernameDisplayMobile) usernameDisplayMobile.textContent = username;
+                } else {
+                    loggedOutElements.forEach(el => el.classList.remove('hidden'));
+                    loggedInElements.forEach(el => el.classList.add('hidden'));
+                }
+            }
+
+            // Logout function
+            function logout() {
+                localStorage.removeItem('username');
+                localStorage.removeItem('user_pro'); // Clear pro status on logout
+                updateUI();
+                // Redirect to home or login page if desired
+                window.location.href = 'index.html'; // Or 'login.html'
+            }
+
+            // Open Mobile Menu
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Close Mobile Menu
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Close Mobile Menu when clicking overlay
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Logout Buttons
+            if (logoutButtonDesktop) {
+                logoutButtonDesktop.addEventListener('click', logout);
+            }
+            if (logoutButtonMobile) {
+                logoutButtonMobile.addEventListener('click', logout);
+            }
+
+            // --- Video Data (Simulated) ---
+            const videos = [
+                {
+                    id: 'vid1',
+                    title: 'The Enigmatic Forest',
+                    creator: 'NatureExplorer',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+1',
+                    duration: '12:34',
+                    views: '1.2M',
+                    likes: '50K',
+                    url: 'https://example.com/video1', // Direct video URL
+                    isPro: false,
+                    category: 'Nature'
+                },
+                {
+                    id: 'vid2',
+                    title: 'Urban Serenity',
+                    creator: 'CityScape',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+2',
+                    duration: '08:15',
+                    views: '800K',
+                    likes: '30K',
+                    url: 'https://example.com/video2',
+                    isPro: true,
+                    category: 'City'
+                },
+                {
+                    id: 'vid3',
+                    title: 'Whispers of the Past',
+                    creator: 'HistoryBuff',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+3',
+                    duration: '20:00',
+                    views: '2.1M',
+                    likes: '75K',
+                    url: 'https://example.com/video3',
+                    isPro: false,
+                    category: 'Documentary'
+                },
+                {
+                    id: 'vid4',
+                    title: 'Cosmic Wonders',
+                    creator: 'SpaceGazer',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+4',
+                    duration: '15:45',
+                    views: '950K',
+                    likes: '40K',
+                    url: 'https://example.com/video4',
+                    isPro: true,
+                    category: 'Science'
+                },
+                {
+                    id: 'vid5',
+                    title: 'Culinary Journey',
+                    creator: 'FoodieMaster',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+5',
+                    duration: '10:00',
+                    views: '1.5M',
+                    likes: '60K',
+                    url: 'https://example.com/video5',
+                    isPro: false,
+                    category: 'Cooking'
+                },
+                {
+                    id: 'vid6',
+                    title: 'Ancient Mysteries',
+                    creator: 'ExplorerX',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+6',
+                    duration: '25:00',
+                    views: '1.8M',
+                    likes: '65K',
+                    url: 'https://example.com/video6',
+                    isPro: true,
+                    category: 'History'
+                },
+                {
+                    id: 'vid7',
+                    title: 'Deep Sea Life',
+                    creator: 'Oceanographer',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+7',
+                    duration: '18:30',
+                    views: '1.1M',
+                    likes: '48K',
+                    url: 'https://example.com/video7',
+                    isPro: false,
+                    category: 'Nature'
+                },
+                {
+                    id: 'vid8',
+                    title: 'Future Tech',
+                    creator: 'InnovateNow',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+8',
+                    duration: '09:00',
+                    views: '700K',
+                    likes: '28K',
+                    url: 'https://example.com/video8',
+                    isPro: true,
+                    category: 'Technology'
+                },
+                {
+                    id: 'vid9',
+                    title: 'Fitness Fun',
+                    creator: 'FitLife',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+9',
+                    duration: '06:20',
+                    views: '600K',
+                    likes: '25K',
+                    url: 'https://example.com/video9',
+                    isPro: false,
+                    category: 'Fitness'
+                },
+                {
+                    id: 'vid10',
+                    title: 'Artistic Expressions',
+                    creator: 'CreativeSoul',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+10',
+                    duration: '11:00',
+                    views: '450K',
+                    likes: '20K',
+                    url: 'https://example.com/video10',
+                    isPro: false,
+                    category: 'Art'
+                },
+                {
+                    id: 'vid11',
+                    title: 'Wilderness Survival',
+                    creator: 'OutdoorPro',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+11',
+                    duration: '30:00',
+                    views: '1.9M',
+                    likes: '70K',
+                    url: 'https://example.com/video11',
+                    isPro: true,
+                    category: 'Adventure'
+                },
+                {
+                    id: 'vid12',
+                    title: 'Digital Artistry',
+                    creator: 'PixelPerfect',
+                    thumbnail: 'https://via.placeholder.com/300x170?text=Video+12',
+                    duration: '14:00',
+                    views: '850K',
+                    likes: '35K',
+                    url: 'https://example.com/video12',
+                    isPro: false,
+                    category: 'Technology'
+                }
+            ];
+
+            // Extract unique categories from videos
+            function getUniqueCategories() {
+                const categories = new Set(videos.map(video => video.category));
+                return ['All Categories', ...Array.from(categories).sort()];
+            }
+
+            // Populate category filter dropdown
+            function populateCategories() {
+                const categories = getUniqueCategories();
+                categoryFilter.innerHTML = ''; // Clear existing options
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categoryFilter.appendChild(option);
+                });
+
+                // Set initial filter from URL if available
+                const urlParams = new URLSearchParams(window.location.search);
+                const initialCategory = urlParams.get('category');
+                if (initialCategory && categories.includes(initialCategory)) {
+                    categoryFilter.value = initialCategory;
+                }
+            }
+
+            // Render videos based on selected category
+            function renderVideos(selectedCategory = 'All Categories') {
+                videoGrid.innerHTML = ''; // Clear existing videos
+
+                const filteredVideos = selectedCategory === 'All Categories'
+                    ? videos
+                    : videos.filter(video => video.category === selectedCategory);
+
+                const isProUser = localStorage.getItem('user_pro') === 'true';
+
+                if (filteredVideos.length === 0) {
+                    videoGrid.innerHTML = '<p class="col-span-full text-center text-gray-400">No videos found for this category.</p>';
+                } else {
+                    filteredVideos.forEach(video => {
+                        // Determine the URL to navigate to when the video card is clicked
+                        let videoClickUrl = video.url;
+                        if (video.isPro && !isProUser) {
+                            videoClickUrl = 'membership.html'; // Redirect to membership if PRO video and not PRO user
+                        }
+
+                        const videoCard = `
+                            <a href="${videoClickUrl}" class="video-card rounded-lg border p-0 block">
+                                <div class="video-thumbnail">
+                                    <img src="${video.thumbnail}" alt="${video.title}" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x170?text=Video+Unavailable';">
+                                    <div class="play-button">
+                                        <i class="fas fa-play text-white text-xl"></i>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-300"><i class="fas fa-eye mr-1"></i> ${video.views}</span>
+                                            <span class="text-gray-300"><i class="fas fa-heart mr-1"></i> ${video.likes}</span>
+                                            ${video.isPro ? '<span class="text-primary font-bold"><i class="fas fa-gem mr-1"></i>PRO</span>' : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold mb-1">${video.title}</h3>
+                                    <p class="text-sm text-gray-400">By ${video.creator} • ${video.duration}</p>
+                                    <p class="text-xs text-gray-500 mt-1">Category: ${video.category || 'N/A'}</p>
+                                </div>
+                            </a>
+                        `;
+                        videoGrid.insertAdjacentHTML('beforeend', videoCard);
+                    });
+                }
+            }
+
+            // Event listener for category filter dropdown
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', function() {
+                    const selectedCategory = this.value;
+                    renderVideos(selectedCategory); // Re-render videos based on new selection
+                });
+            }
+
+            // --- Initialization Calls ---\
+            updateUI(); // Check login status and update navigation
+            populateCategories(); // Fill the category dropdown
+            // Initial render based on URL category or 'All Categories'
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialCategory = urlParams.get('category');
+            renderVideos(initialCategory || 'All Categories');
+        });
+    </script>
+</body>
+</html>

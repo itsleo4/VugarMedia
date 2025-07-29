@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild Content | VugarMedia</title>
+    <meta name="description" content="Unleash your wildest fantasies with our most intense content">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wildRed: '#e00000',
+                        wildGlow: '#ff4500',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1a0a0a 100%);
+            font-family: 'Inter', sans-serif;
+            color: #f8fafc;
+        }
+        
+        .video-card {
+            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(224, 0, 0, 0.5);
+            border-color: var(--tw-colors-wildRed);
+        }
+        
+        .like-button.liked, .save-button.saved {
+            color: #ef4444;
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .view-count {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .pagination a {
+            color: white;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 4px;
+            background: rgba(255, 69, 0, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background: var(--tw-colors-wildRed);
+        }
+        
+        .video-player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-player {
+            width: 80%;
+            max-width: 1200px;
+            position: relative;
+        }
+        
+        .close-player {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold">
+                <span class="text-purple-600">Vugar</span><span class="text-white">Media</span>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-white">Home</a>
+                <a href="wild.html" class="text-wildRed font-bold">Wild</a>
+                <a href="romantic.html" class="text-gray-300 hover:text-white">Romantic</a>
+                <a href="hardcore.html" class="text-gray-300 hover:text-white">Hardcore</a>
+                <a href="sensual.html" class="text-gray-300 hover:text-white">Sensual</a>
+                <a href="login.html" class="text-gray-300 hover:text-white">Login</a>
+            </div>
+            
+            <button class="md:hidden text-gray-300 hover:text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Video Player Modal -->
+    <div class="video-player-container" id="videoPlayerContainer">
+        <div class="video-player">
+            <span class="close-player" id="closePlayer">&times;</span>
+            <iframe id="mainVideoPlayer" class="w-full aspect-video" frameborder="0" allowfullscreen></iframe>
+            <div class="mt-4">
+                <h2 id="videoTitle" class="text-2xl font-bold"></h2>
+                <p id="videoDescription" class="text-gray-400 mt-2"></p>
+                <div class="video-actions">
+                    <button id="playerLikeBtn" class="like-button px-4 py-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                        <i class="far fa-heart mr-2"></i> Like
+                    </button>
+                    <button id="playerSaveBtn" class="save-button px-4 py-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                        <i class="far fa-bookmark mr-2"></i> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-wildRed to-wildGlow bg-clip-text text-transparent">
+                WILDEST CONTENT 🔥
+            </h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                Raw, uncensored, and absolutely wild - these videos will push all your limits
+            </p>
+        </div>
+
+        <!-- Video Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="videoGrid">
+            <!-- Videos will be loaded here dynamically -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination links will be generated here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/80 border-t border-gray-800 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="text-gray-400 hover:text-white">Terms</a>
+                <a href="#" class="text-gray-400 hover:text-white">Privacy</a>
+                <a href="#" class="text-gray-400 hover:text-white">Contact</a>
+            </div>
+            <p class="text-gray-500 text-sm">© 2023 VugarMedia. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Video data - in a real app, this would come from a database via PHP
+        const allVideos = [
+            {
+                id: 1,
+                title: "🔥 Shrine Maiden's Cum-Filled Ritual",
+                description: "Her innocent look hides wild desires",
+                embedUrl: "https://javtiful.com/embed/6b52dab048d5a58c2838",
+                views: 24700000,
+                likes: 1800000,
+                saved: false
+            },
+            {
+                id: 2,
+                title: "🌸 Tsumugi's Adult Initiation",
+                description: "Innocent 18yo's first wild experience",
+                embedUrl: "https://javtiful.com/embed/eb65191a5f34a1fbec95",
+                views: 18300000,
+                likes: 1200000,
+                saved: false
+            },
+            {
+                id: 3,
+                title: "📣 Cheerleader Yuna's Wild Ride",
+                description: "Perfect body put to the ultimate test",
+                embedUrl: "https://javtiful.com/embed/6880ce02358842495e87",
+                views: 32100000,
+                likes: 2400000,
+                saved: false
+            },
+            {
+                id: 4,
+                title: "🤍 G-Cup Beauty's Pale Perfection",
+                description: "Junior's massive assets on full display",
+                embedUrl: "https://javtiful.com/embed/52e83389854ba6a21471",
+                views: 27500000,
+                likes: 1900000,
+                saved: false
+            },
+            {
+                id: 5,
+                title: "👑 Goddess' 7P Urinal Project",
+                description: "Long-awaited extreme gangbang",
+                embedUrl: "https://javtiful.com/embed/88f11d871e8dca5f642f",
+                views: 45200000,
+                likes: 3100000,
+                saved: false
+            },
+            {
+                id: 6,
+                title: "💋 Serious Girl's Wild Mouth Skills",
+                description: "Looks can be deceiving",
+                embedUrl: "https://javtiful.com/embed/badbce4612c58b42a739",
+                views: 19600000,
+                likes: 1300000,
+                saved: false
+            },
+            {
+                id: 7,
+                title: "🤫 Face Reveal For Secret Desires",
+                description: "What she wouldn't show before",
+                embedUrl: "https://javtiful.com/embed/83887b380d916b41c4b0",
+                views: 22400000,
+                likes: 1500000,
+                saved: false
+            },
+            {
+                id: 8,
+                title: "🍒 Big-Breasted Beauty On Camera",
+                description: "Persuaded to cum for the world",
+                embedUrl: "https://javtiful.com/embed/004b204dfe02c5e64b7d",
+                views: 28900000,
+                likes: 2000000,
+                saved: false
+            },
+            {
+                id: 9,
+                title: "💦 Daily Creampie Confession",
+                description: "Her boyfriend's special routine",
+                embedUrl: "https://javtiful.com/embed/b6d0024fb20443927ad0",
+                views: 36700000,
+                likes: 2600000,
+                saved: false
+            },
+            {
+                id: 10,
+                title: "🥵 Tall Beauty's Creampie Obsession",
+                description: "20yo with hidden perversions",
+                embedUrl: "https://javtiful.com/embed/31fcaad1cb77d7d76b8c",
+                views: 41300000,
+                likes: 2900000,
+                saved: false
+            },
+            {
+                id: 11,
+                title: "💸 Politician's Doll-Faced Plaything",
+                description: "The dark reality of exploitation",
+                embedUrl: "https://javtiful.com/embed/d8eed35eba030fb6b912",
+                views: 29500000,
+                likes: 2100000,
+                saved: false
+            },
+            {
+                id: 12,
+                title: "⏰ Boss's Overtime Orgasm Control",
+                description: "Young wife's workplace torment",
+                embedUrl: "https://javtiful.com/embed/f45f418e605289d3ea25",
+                views: 33800000,
+                likes: 2300000,
+                saved: false
+            },
+            {
+                id: 13,
+                title: "💰 Soggy Rich Sex With Mature Babe",
+                description: "Experience comes with age",
+                embedUrl: "https://javtiful.com/embed/8449512dbd2725721a30",
+                views: 25100000,
+                likes: 1700000,
+                saved: false
+            },
+            {
+                id: 14,
+                title: "🌟 Idol's First Creampie Climax",
+                description: "18yo's tight vagina overwhelmed",
+                embedUrl: "https://javtiful.com/embed/3ca3da9f76e04d608d7d",
+                views: 38200000,
+                likes: 2700000,
+                saved: false
+            },
+            {
+                id: 15,
+                title: "🍑 Big Ass Idol's Lewd Secrets",
+                description: "Chapter 2 of her hidden desires",
+                embedUrl: "https://javtiful.com/embed/7f4bf37a5771ee9f818b",
+                views: 31600000,
+                likes: 2200000,
+                saved: false
+            }
+        ];
+
+        // User state - in a real app, this would come from PHP session
+        let isLoggedIn = false; // Change to true when user logs in
+
+        // Pagination variables
+        const videosPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(allVideos.length / videosPerPage);
+
+        // DOM elements
+        const videoGrid = document.getElementById('videoGrid');
+        const pagination = document.getElementById('pagination');
+        const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+        const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoDescription = document.getElementById('videoDescription');
+        const closePlayer = document.getElementById('closePlayer');
+        const playerLikeBtn = document.getElementById('playerLikeBtn');
+        const playerSaveBtn = document.getElementById('playerSaveBtn');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVideos(currentPage);
+            setupPagination();
+            
+            // Check login status from session (in a real app)
+            // This would be done via PHP in a real implementation
+            // isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        });
+
+        // Load videos for the current page
+        function loadVideos(page) {
+            videoGrid.innerHTML = '';
+            const startIndex = (page - 1) * videosPerPage;
+            const endIndex = Math.min(startIndex + videosPerPage, allVideos.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const video = allVideos[i];
+                const videoCard = createVideoCard(video);
+                videoGrid.appendChild(videoCard);
+            }
+        }
+
+        // Create a video card element
+        function createVideoCard(video) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.dataset.id = video.id;
+            
+            const viewsFormatted = formatNumber(video.views);
+            const likesFormatted = formatNumber(video.likes);
+            
+            card.innerHTML = `
+                <div class="relative overflow-hidden rounded-t-lg" style="padding-bottom: 56.25%;">
+                    <img src="https://via.placeholder.com/640x360" alt="Thumbnail" class="absolute top-0 left-0 w-full h-full object-cover cursor-pointer play-video">
+                    <div class="absolute inset-0 flex items-center justify-center play-button">
+                        <i class="fas fa-play text-4xl text-white bg-black bg-opacity-50 rounded-full p-4"></i>
+                    </div>
+                    <div class="absolute bottom-2 left-2 flex space-x-2">
+                        <span class="view-count text-white"><i class="fas fa-eye mr-1"></i> ${viewsFormatted}</span>
+                        <span class="view-count text-white"><i class="fas fa-heart mr-1"></i> ${likesFormatted}</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-1">${video.title}</h3>
+                    <p class="text-sm text-gray-400 mb-3">${video.description}</p>
+                    <div class="flex space-x-2">
+                        <button class="like-button px-3 py-1 rounded-full bg-gray-800 hover:bg-gray-700 transition" data-id="${video.id}">
+                            <i class="far fa-heart mr-1"></i> Like
+                        </button>
+                        <button class="save-button px-3 py-1 rounded-full bg-gray-800 hover:bg-gray-700 transition" data-id="${video.id}">
+                            <i class="far fa-bookmark mr-1"></i> Save
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add click event to play video
+            const playBtn = card.querySelector('.play-video');
+            const playIcon = card.querySelector('.play-button');
+            playBtn.addEventListener('click', () => openVideoPlayer(video));
+            playIcon.addEventListener('click', () => openVideoPlayer(video));
+            
+            // Add like/save button events
+            const likeBtn = card.querySelector('.like-button');
+            const saveBtn = card.querySelector('.save-button');
+            
+            likeBtn.addEventListener('click', function() {
+                handleLike(this, video.id);
+            });
+            
+            saveBtn.addEventListener('click', function() {
+                handleSave(this, video.id);
+            });
+            
+            return card;
+        }
+
+        // Format large numbers (1K, 1M, etc.)
+        function formatNumber(num) {
+            if (num >= 1000000000) {
+                return (num / 1000000000).toFixed(1) + 'B';
+            } else if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Setup pagination links
+        function setupPagination() {
+            pagination.innerHTML = '';
+            
+            // Previous button
+            if (currentPage > 1) {
+                const prevLink = document.createElement('a');
+                prevLink.href = '#';
+                prevLink.innerHTML = '&laquo;';
+                prevLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage--;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(prevLink);
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.textContent = i;
+                if (i === currentPage) {
+                    pageLink.classList.add('active');
+                }
+                pageLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(pageLink);
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                const nextLink = document.createElement('a');
+                nextLink.href = '#';
+                nextLink.innerHTML = '&raquo;';
+                nextLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage++;
+                    loadVideos(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(nextLink);
+            }
+        }
+
+        // Open video player with selected video
+        function openVideoPlayer(video) {
+            mainVideoPlayer.src = video.embedUrl;
+            videoTitle.textContent = video.title;
+            videoDescription.textContent = video.description;
+            
+            // Set up player buttons
+            playerLikeBtn.dataset.id = video.id;
+            playerSaveBtn.dataset.id = video.id;
+            
+            // Reset button states
+            playerLikeBtn.classList.remove('liked');
+            playerLikeBtn.querySelector('i').className = 'far fa-heart mr-2';
+            
+            playerSaveBtn.classList.remove('saved');
+            playerSaveBtn.querySelector('i').className = 'far fa-bookmark mr-2';
+            
+            // Show player
+            videoPlayerContainer.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close video player
+        closePlayer.addEventListener('click', function() {
+            videoPlayerContainer.style.display = 'none';
+            mainVideoPlayer.src = '';
+            document.body.style.overflow = 'auto';
+        });
+
+        // Handle like button click
+        function handleLike(button, videoId) {
+            if (!isLoggedIn) {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const video = allVideos.find(v => v.id === videoId);
+            const isLiked = button.classList.contains('liked');
+            const icon = button.querySelector('i');
+            
+            if (isLiked) {
+                // Unlike
+                button.classList.remove('liked');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                video.likes--;
+            } else {
+                // Like
+                button.classList.add('liked');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                video.likes++;
+            }
+            
+            // Update like count display
+            const likeCountElement = button.closest('.video-card').querySelector('.fa-heart').parentElement;
+            likeCountElement.textContent = formatNumber(video.likes);
+            
+            // In a real app, send this to the server via AJAX
+            // updateLikeStatus(videoId, !isLiked);
+        }
+
+        // Handle save button click
+        function handleSave(button, videoId) {
+            if (!isLoggedIn) {
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const video = allVideos.find(v => v.id === videoId);
+            const isSaved = button.classList.contains('saved');
+            const icon = button.querySelector('i');
+            
+            if (isSaved) {
+                // Unsave
+                button.classList.remove('saved');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                video.saved = false;
+            } else {
+                // Save
+                button.classList.add('saved');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                video.saved = true;
+            }
+            
+            // In a real app, send this to the server via AJAX
+            // updateSaveStatus(videoId, !isSaved);
+        }
+
+        // Player like button
+        playerLikeBtn.addEventListener('click', function() {
+            const videoId = parseInt(this.dataset.id);
+            handleLike(this, videoId);
+            
+            // Also update the corresponding card's like button
+            const cardLikeBtn = document.querySelector(`.video-card[data-id="${videoId}"] .like-button`);
+            if (cardLikeBtn) {
+                cardLikeBtn.classList.toggle('liked');
+                const icon = cardLikeBtn.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+            }
+        });
+
+        // Player save button
+        playerSaveBtn.addEventListener('click', function() {
+            const videoId = parseInt(this.dataset.id);
+            handleSave(this, videoId);
+            
+            // Also update the corresponding card's save button
+            const cardSaveBtn = document.querySelector(`.video-card[data-id="${videoId}"] .save-button`);
+            if (cardSaveBtn) {
+                cardSaveBtn.classList.toggle('saved');
+                const icon = cardSaveBtn.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+            }
+        });
+    </script>
+</body>
+</html>

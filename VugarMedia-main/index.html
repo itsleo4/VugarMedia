@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VugarMedia | Premium Video Sharing</title>
+    <meta name="description" content="Private video sharing platform for exclusive content">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        donateRed: '#ef4444',
+                        accentYellow: '#facc15',
+                        vugarPurple: '#6d28d9', 
+                        mediaWhite: '#f8fafc', 
+                        proGold: '#FFD700',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .vugarmedia-logo {
+            font-size: 1.5rem; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            line-height: 1; 
+        }
+
+        .vugarmedia-logo .vugar {
+            color: var(--tw-colors-vugarPurple); 
+        }
+
+        .vugarmedia-logo .media {
+            color: var(--tw-colors-mediaWhite); 
+            margin-left: 0.15em; 
+        }
+
+        /* Desktop Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        .profile-dropdown-content {
+            position: absolute;
+            top: 100%; 
+            right: 0;
+            background-color: var(--tw-colors-dark);
+            border: 1px solid var(--tw-colors-gray-700);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            z-index: 100;
+            display: none; 
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .profile-dropdown-content.show {
+            display: flex; 
+        }
+        .profile-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            color: #ccc;
+            text-decoration: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 0.25rem;
+        }
+        .profile-dropdown-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        .profile-dropdown-item i {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.5rem;
+            color: var(--tw-colors-primary);
+        }
+        .profile-dropdown-item.logout-btn {
+            color: #ef4444;
+        }
+        .profile-dropdown-item.logout-btn i {
+            color: #ef4444;
+        }
+        
+        /* Updated Donate Button Styles */
+        .profile-dropdown-item.donate-btn {
+            background: linear-gradient(45deg, #ef4444 0%, #f97316 100%);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            animation: pulse 2s infinite;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-dropdown-item.donate-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            animation: none;
+        }
+
+        .profile-dropdown-item.donate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .profile-dropdown-item.donate-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Mobile Menu styles */
+        .mobile-menu-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            background-color: var(--tw-colors-dark);
+            border-left: 1px solid var(--tw-colors-gray-700);
+        }
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none; 
+        }
+        .mobile-menu-overlay.open {
+            opacity: 1;
+            pointer-events: auto; 
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem; 
+            color: #ccc; 
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            margin: 0.25rem 0;
+        }
+        .mobile-menu-item:hover {
+            color: #fff;
+            background-color: rgba(255,255,255,0.05);
+        }
+        .mobile-menu-item i {
+            width: 2rem; 
+            text-align: center;
+            margin-right: 0.75rem;
+            color: var(--tw-colors-primary); 
+        }
+        .mobile-menu-item.logout-btn {
+            color: #ef4444; 
+        }
+        .mobile-menu-item.logout-btn i {
+            color: #ef4444; 
+        }
+        
+        .mobile-menu-item.donate-btn {
+            background: linear-gradient(45deg, #ef4444 0%, #f97316 100%);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            animation: pulse 2s infinite;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mobile-menu-item.donate-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            animation: none;
+        }
+
+        .mobile-menu-item.donate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .mobile-menu-item.donate-btn:hover::before {
+            left: 100%;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        /* User info section */
+        .mobile-user-info {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--tw-colors-gray-700);
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 0.5rem;
+        }
+        .mobile-user-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Pro Badge Styling */
+        .pro-badge {
+            background-color: #FFD700;
+            color: #1a202c;
+            font-weight: bold;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Mood Category Card Styling */
+        .mood-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--tw-colors-gray-700);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            min-height: 150px;
+        }
+        .mood-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(109,40,217,0.5);
+            border-color: var(--tw-colors-primary);
+        }
+        .mood-card .emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        .mood-card .mood-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Category Grid Styling */
+        .category-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--tw-colors-gray-700);
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(109,40,217,0.5);
+            border-color: var(--tw-colors-primary);
+        }
+        .category-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            overflow: hidden;
+        }
+        .category-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .category-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            padding: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        /* Profile banner */
+        .profile-banner {
+            background: linear-gradient(135deg, rgba(109,40,217,0.2) 0%, rgba(147,51,234,0.2) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--tw-colors-gray-700);
+        }
+    </style>
+</head>
+<body class="text-light font-sans antialiased">
+    <nav class="bg-dark/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="vugarmedia-logo">
+                    <span class="vugar">Vugar</span><span class="media">Media</span>
+                </div>
+            </a>
+            
+            <div id="desktopNav" class="hidden md:flex items-center space-x-6">
+                <a href="explore.html" class="text-gray-300 hover:text-white transition">Explore</a>
+                <a href="membership.html" id="membershipLinkDesktop" class="text-gray-300 hover:text-white transition">Membership</a>
+                <a href="#" class="text-gray-300 hover:text-white transition">About</a>
+                
+                <div class="profile-dropdown relative">
+                    <button id="desktopProfileButton" class="text-gray-300 hover:text-white transition p-2 rounded-full">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </button>
+                    <div id="desktopProfileDropdown" class="profile-dropdown-content">
+                        <div id="desktopLoggedInOptions" class="flex flex-col gap-2 hidden">
+                            <span id="welcomeUserDesktop" class="profile-dropdown-item text-white font-semibold cursor-default">
+                                <i class="fas fa-user-circle"></i>
+                                <span></span>
+                                <span id="proBadgeDesktop" class="pro-badge hidden"><i class="fas fa-star mr-1"></i>PRO</span>
+                            </span>
+                            <a href="#" id="uploadOptionDesktop" class="profile-dropdown-item">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Upload</span>
+                            </a>
+                            <a href="saved.html" id="savedVideosLinkDesktop" class="profile-dropdown-item">
+                                <i class="fas fa-bookmark"></i>
+                                <span>Saved Videos</span>
+                            </a>
+                            <a href="#" id="accountSettingsLinkDesktop" class="profile-dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a href="donate.html" id="donateButtonDesktop" class="profile-dropdown-item donate-btn">
+                                <i class="fas fa-hand-holding-heart"></i>
+                                <span>DONATE US!</span>
+                            </a>
+                            <button id="logoutButtonDesktop" class="profile-dropdown-item logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                        <div id="desktopAuthOptions" class="flex flex-col gap-2">
+                            <a href="login.html" class="profile-dropdown-item">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                            <a href="register.html" class="profile-dropdown-item">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Register</span>
+                            </a>
+                            <a href="donate.html" class="profile-dropdown-item donate-btn">
+                                <i class="fas fa-hand-holding-heart"></i>
+                                <span>DONATE US!</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="mobileMenuButton" class="md:hidden text-gray-300 hover:text-white">
+                <i class="fas fa-user-circle text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 z-40 hidden"></div>
+
+    <div id="mobileMenuPanel" class="mobile-menu-panel fixed top-0 right-0 h-full w-64 bg-dark z-50 p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <div class="vugarmedia-logo text-xl">
+                <span class="vugar">Vugar</span><span class="media">Media</span>
+            </div>
+            <button id="closeMobileMenuButton" class="text-gray-400 hover:text-white text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- User Info Section -->
+        <div id="mobileLoggedInHeader" class="mobile-user-info hidden">
+            <div class="mobile-user-name">
+                <i class="fas fa-user-circle mr-2 text-primary"></i>
+                <span id="welcomeUserMobile"></span>
+                <span id="proBadgeMobile" class="pro-badge hidden"><i class="fas fa-star mr-1"></i>PRO</span>
+            </div>
+        </div>
+
+        <!-- Main Menu Items -->
+        <div class="flex flex-col space-y-2 flex-grow overflow-y-auto">
+            <!-- Navigation Links -->
+            <a href="explore.html" class="mobile-menu-item">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </a>
+            <a href="membership.html" id="membershipLinkMobile" class="mobile-menu-item">
+                <i class="fas fa-gem"></i>
+                <span>Membership</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </a>
+            
+            <hr class="border-gray-700 my-2">
+
+            <!-- User Actions (shown when logged in) -->
+            <div id="mobileLoggedInOptions" class="flex flex-col space-y-2 hidden">
+                <a href="#" id="uploadOptionMobile" class="mobile-menu-item">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Upload</span>
+                </a>
+                <a href="saved.html" id="savedVideosLinkMobile" class="mobile-menu-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Saved Videos</span>
+                </a>
+                <a href="#" id="accountSettingsLinkMobile" class="mobile-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Donate Button (always visible) -->
+            <a href="donate.html" class="mobile-menu-item donate-btn">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>DONATE US!</span>
+            </a>
+
+            <!-- Auth Options (shown when logged out) -->
+            <div id="mobileAuthOptions" class="flex flex-col space-y-2">
+                <a href="login.html" class="mobile-menu-item">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+                <a href="register.html" class="mobile-menu-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register</span>
+                </a>
+            </div>
+
+            <!-- Logout Button (shown when logged in) -->
+            <div id="mobileLoggedInOptionsBottom" class="flex flex-col space-y-2 hidden">
+                <button id="logoutButtonMobile" class="mobile-menu-item logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="relative py-16 md:py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-dark via-primary/10 to-dark z-0"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    Join Our <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Exclusive Community</span>
+                </h1>
+                <p class="text-xl text-gray-300 mb-8">
+                    Access premium adult content in a private, ad-free environment. Explore your desires.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="register.html" id="getStartedButton" class="px-8 py-3 rounded-md bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition transform hover:scale-105">
+                        Get Started <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
+                Explore Your Desires
+            </h2>
+            <div id="moodCategoriesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Mood categories will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">
+                Popular Categories
+            </h2>
+            <div id="popularCategoriesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Popular categories will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark/90 text-gray-400 py-8 mt-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4 vugarmedia-logo">
+                    <span class="vugar">Vugar</span><span class="media">Media</span>
+                </h3>
+                <p class="text-sm">Exclusive content for a private audience. Dive deep into unique experiences.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="explore.html" class="hover:text-white transition">Explore</a></li>
+                    <li><a href="membership.html" class="hover:text-white transition">Membership</a></li>
+                    <li><a href="donate.html" class="hover:text-white transition">Donate</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Connect</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition"><i class="fab fa-telegram mr-2"></i> Telegram</a></li>
+                    <li><a href="#" class="hover:text-white transition"><i class="fas fa-envelope mr-2"></i> Contact Us</a></li>
+                </ul>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+            &copy; 2025 VugarMedia. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- UI Elements ---
+            const desktopProfileButton = document.getElementById('desktopProfileButton');
+            const desktopProfileDropdown = document.getElementById('desktopProfileDropdown');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
+            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+
+            // Elements for login/logout state
+            const getStartedButton = document.getElementById('getStartedButton');
+            const desktopAuthOptions = document.getElementById('desktopAuthOptions');
+            const desktopLoggedInOptions = document.getElementById('desktopLoggedInOptions');
+            const mobileAuthOptions = document.getElementById('mobileAuthOptions');
+            const mobileLoggedInOptions = document.getElementById('mobileLoggedInOptions');
+            const mobileLoggedInHeader = document.getElementById('mobileLoggedInHeader');
+            const mobileLoggedInOptionsBottom = document.getElementById('mobileLoggedInOptionsBottom');
+
+            // Elements for username display
+            const welcomeUserDesktop = document.getElementById('welcomeUserDesktop');
+            const welcomeUserMobile = document.getElementById('welcomeUserMobile');
+
+            // Elements for Pro status
+            const membershipLinkDesktop = document.getElementById('membershipLinkDesktop');
+            const membershipLinkMobile = document.getElementById('membershipLinkMobile');
+            const proBadgeDesktop = document.getElementById('proBadgeDesktop');
+            const proBadgeMobile = document.getElementById('proBadgeMobile');
+
+            // Account settings links
+            const accountSettingsLinkDesktop = document.getElementById('accountSettingsLinkDesktop');
+            const accountSettingsLinkMobile = document.getElementById('accountSettingsLinkMobile');
+
+            // Saved videos links
+            const savedVideosLinkDesktop = document.getElementById('savedVideosLinkDesktop');
+            const savedVideosLinkMobile = document.getElementById('savedVideosLinkMobile');
+
+            // --- Functions ---
+            function updateUI() {
+                const username = localStorage.getItem('username');
+                const isPro = localStorage.getItem('user_pro') === 'true';
+                const isLoggedIn = !!username;
+
+                // Toggle authentication options
+                if (isLoggedIn) {
+                    desktopAuthOptions.classList.add('hidden');
+                    desktopLoggedInOptions.classList.remove('hidden');
+                    mobileAuthOptions.classList.add('hidden');
+                    mobileLoggedInOptions.classList.remove('hidden');
+                    mobileLoggedInOptionsBottom.classList.remove('hidden');
+                    mobileLoggedInHeader.classList.remove('hidden');
+
+                    if (getStartedButton) getStartedButton.classList.add('hidden');
+
+                    // Set username
+                    if (welcomeUserDesktop) welcomeUserDesktop.querySelector('span').textContent = username;
+                    if (welcomeUserMobile) welcomeUserMobile.textContent = username;
+
+                    // Update 'Membership' link to 'My Pro' and show badge if Pro
+                    if (isPro) {
+                        if (membershipLinkDesktop) {
+                            membershipLinkDesktop.textContent = 'My Pro';
+                            membershipLinkDesktop.href = 'pro.html';
+                        }
+                        if (membershipLinkMobile) {
+                            membershipLinkMobile.textContent = 'My Pro';
+                            membershipLinkMobile.href = 'pro.html';
+                        }
+                        if (proBadgeDesktop) proBadgeDesktop.classList.remove('hidden');
+                        if (proBadgeMobile) proBadgeMobile.classList.remove('hidden');
+                    } else {
+                        if (membershipLinkDesktop) {
+                            membershipLinkDesktop.textContent = 'Membership';
+                            membershipLinkDesktop.href = 'membership.html';
+                        }
+                        if (membershipLinkMobile) {
+                            membershipLinkMobile.textContent = 'Membership';
+                            membershipLinkMobile.href = 'membership.html';
+                        }
+                        if (proBadgeDesktop) proBadgeDesktop.classList.add('hidden');
+                        if (proBadgeMobile) proBadgeMobile.classList.add('hidden');
+                    }
+
+                } else {
+                    desktopAuthOptions.classList.remove('hidden');
+                    desktopLoggedInOptions.classList.add('hidden');
+                    mobileAuthOptions.classList.remove('hidden');
+                    mobileLoggedInOptions.classList.add('hidden');
+                    mobileLoggedInOptionsBottom.classList.add('hidden');
+                    mobileLoggedInHeader.classList.add('hidden');
+
+                    if (getStartedButton) getStartedButton.classList.remove('hidden');
+
+                    // Reset 'Membership' link and hide badge if not logged in
+                    if (membershipLinkDesktop) {
+                        membershipLinkDesktop.textContent = 'Membership';
+                        membershipLinkDesktop.href = 'membership.html';
+                    }
+                    if (membershipLinkMobile) {
+                        membershipLinkMobile.textContent = 'Membership';
+                        membershipLinkMobile.href = 'membership.html';
+                    }
+                    if (proBadgeDesktop) proBadgeDesktop.classList.add('hidden');
+                    if (proBadgeMobile) proBadgeMobile.classList.add('hidden');
+                }
+            }
+
+            function logout() {
+                localStorage.removeItem('username');
+                localStorage.removeItem('user_pro');
+                updateUI();
+                window.location.href = 'index.html';
+            }
+
+            // Account settings functionality
+            if (accountSettingsLinkDesktop) {
+                accountSettingsLinkDesktop.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Account settings will be available soon!');
+                });
+            }
+            
+            if (accountSettingsLinkMobile) {
+                accountSettingsLinkMobile.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Account settings will be available soon!');
+                });
+            }
+
+            // Saved videos functionality
+            if (savedVideosLinkDesktop) {
+                savedVideosLinkDesktop.addEventListener('click', function(e) {
+                    if (!localStorage.getItem('username')) {
+                        e.preventDefault();
+                        alert('Please login to view your saved videos');
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+            
+            if (savedVideosLinkMobile) {
+                savedVideosLinkMobile.addEventListener('click', function(e) {
+                    if (!localStorage.getItem('username')) {
+                        e.preventDefault();
+                        alert('Please login to view your saved videos');
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            // Toggle Desktop Profile Dropdown
+            if (desktopProfileButton) {
+                desktopProfileButton.addEventListener('click', function() {
+                    desktopProfileDropdown.classList.toggle('show');
+                });
+            }
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (desktopProfileButton && desktopProfileDropdown && 
+                    !desktopProfileButton.contains(event.target) && 
+                    !desktopProfileDropdown.contains(event.target)) {
+                    desktopProfileDropdown.classList.remove('show');
+                }
+            });
+
+            // Open Mobile Menu
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Close Mobile Menu
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Close Mobile Menu when clicking overlay
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Logout Buttons
+            if (logoutButtonDesktop) {
+                logoutButtonDesktop.addEventListener('click', logout);
+            }
+            if (logoutButtonMobile) {
+                logoutButtonMobile.addEventListener('click', logout);
+            }
+
+            // --- Mood Categories ---
+            const moodCategoriesData = [
+                { emoji: '🔥', title: 'Hot & Steamy', link: 'explore.html?category=hot-steamy' },
+                { emoji: '🍑', title: 'Peachy Scenes', link: 'explore.html?category=peachy-scenes' },
+                { emoji: '😈', title: 'Naughty & Wild', link: 'explore.html?category=naughty-wild' },
+                { emoji: '🍆', title: 'Big & Bold', link: 'explore.html?category=big-bold' },
+                { emoji: '💦', title: 'Wet & Juicy', link: 'explore.html?category=wet-juicy' },
+                { emoji: '💋', title: 'Seductive', link: 'explore.html?category=seductive' }
+            ];
+
+            function renderMoodCategories() {
+                const moodCategoriesGrid = document.getElementById('moodCategoriesGrid');
+                if (moodCategoriesGrid) {
+                    moodCategoriesGrid.innerHTML = '';
+                    moodCategoriesData.forEach(mood => {
+                        const moodCard = `
+                            <a href="${mood.link}" class="mood-card block">
+                                <span class="emoji">${mood.emoji}</span>
+                                <h3 class="mood-title">${mood.title}</h3>
+                            </a>
+                        `;
+                        moodCategoriesGrid.insertAdjacentHTML('beforeend', moodCard);
+                    });
+                }
+            }
+
+            // --- Popular Categories ---
+            const popularCategoriesData = [
+                { title: 'Fantasy', img: 'https://placehold.co/400x225/primary/white?text=Fantasy', link: 'fantasy.html' },
+                { title: 'Kinks', img: 'https://placehold.co/400x225/secondary/white?text=Kinks', link: 'kinks.html' },
+                { title: 'Lonely', img: 'https://placehold.co/400x225/dark/white?text=Lonely', link: 'lonely.html' },
+                { title: 'Random', img: 'https://placehold.co/400x225/light/black?text=Random', link: 'explore.html' },
+            ];
+
+            function renderPopularCategories() {
+                const popularCategoriesGrid = document.getElementById('popularCategoriesGrid');
+                if (popularCategoriesGrid) {
+                    popularCategoriesGrid.innerHTML = '';
+                    popularCategoriesData.forEach(category => {
+                        const categoryCard = `
+                            <a href="${category.link}" class="category-card block">
+                                <div class="category-thumbnail">
+                                    <img src="${category.img}" alt="${category.title}">
+                                    <div class="category-title">${category.title}</div>
+                                </div>
+                            </a>
+                        `;
+                        popularCategoriesGrid.insertAdjacentHTML('beforeend', categoryCard);
+                    });
+                }
+            }
+
+            // Simulate login for demonstration
+            function simulateLogin() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('login') && urlParams.get('login') === 'success') {
+                    localStorage.setItem('username', 'DemoUser');
+                    localStorage.setItem('user_pro', 'true');
+                    updateUI();
+                }
+            }
+
+            // --- Initial rendering and UI update ---
+            renderMoodCategories();
+            renderPopularCategories();
+            simulateLogin();
+            updateUI();
+        });
+    </script>
+</body>
+</html>

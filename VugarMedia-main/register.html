@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | VugarMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .auth-container {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(109,40,217,0.3);
+        }
+        
+        .auth-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(109,40,217,0.5);
+        }
+        
+        .password-strength {
+            height: 4px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-dark text-light min-h-screen flex items-center justify-center p-4">
+    <div class="auth-container rounded-xl border border-gray-700 w-full max-w-md overflow-hidden">
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-center">
+            <a href="index.html" class="flex items-center justify-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-white/20 flex items-center justify-center">
+                    <i class="fas fa-play text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold text-white">VugarMedia</span>
+            </a>
+            <h1 class="text-2xl font-bold mt-4 text-white">Create Account</h1>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <form id="registerForm" class="space-y-5">
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-1">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required
+                            minlength="4"
+                            class="input-field bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
+                            placeholder="Choose a username">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required
+                            minlength="8"
+                            class="input-field bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
+                            placeholder="Create a password">
+                    </div>
+                    <div class="mt-1 flex space-x-1">
+                        <div id="strength-1" class="password-strength bg-gray-600 rounded-full w-1/4"></div>
+                        <div id="strength-2" class="password-strength bg-gray-600 rounded-full w-1/4"></div>
+                        <div id="strength-3" class="password-strength bg-gray-600 rounded-full w-1/4"></div>
+                        <div id="strength-4" class="password-strength bg-gray-600 rounded-full w-1/4"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium mb-1">Confirm Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            required
+                            minlength="8"
+                            class="input-field bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
+                            placeholder="Confirm your password">
+                    </div>
+                    <p id="passwordMatch" class="hidden text-xs mt-1 text-red-400">Passwords do not match</p>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="terms" type="checkbox" required class="w-4 h-4 rounded bg-gray-700 border-gray-600 focus:ring-primary">
+                    </div>
+                    <label for="terms" class="ml-2 text-sm text-gray-300">
+                        I agree to the <a href="#" class="text-primary hover:text-secondary">Terms of Service</a> and <a href="#" class="text-primary hover:text-secondary">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="auth-btn w-full bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-lg px-5 py-2.5 text-center mt-2">
+                    Create Account <i class="fas fa-user-plus ml-2"></i>
+                </button>
+                
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-700"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-gray-800 text-gray-400">Already have an account?</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="login.html" class="inline-flex items-center text-primary hover:text-secondary text-sm font-medium">
+                        Sign in to your account <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBars = [
+                document.getElementById('strength-1'),
+                document.getElementById('strength-2'),
+                document.getElementById('strength-3'),
+                document.getElementById('strength-4')
+            ];
+            
+            // Reset all bars
+            strengthBars.forEach(bar => {
+                bar.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-green-500');
+                bar.classList.add('bg-gray-600');
+            });
+            
+            if (password.length === 0) return;
+            
+            // Very weak (1 bar)
+            if (password.length < 6) {
+                strengthBars[0].classList.remove('bg-gray-600');
+                strengthBars[0].classList.add('bg-red-500');
+                return;
+            }
+            
+            // Weak (2 bars)
+            if (password.length < 8) {
+                strengthBars[0].classList.remove('bg-gray-600');
+                strengthBars[0].classList.add('bg-red-500');
+                strengthBars[1].classList.remove('bg-gray-600');
+                strengthBars[1].classList.add('bg-red-500');
+                return;
+            }
+            
+            // Medium (3 bars)
+            if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                strengthBars[0].classList.remove('bg-gray-600');
+                strengthBars[0].classList.add('bg-yellow-500');
+                strengthBars[1].classList.remove('bg-gray-600');
+                strengthBars[1].classList.add('bg-yellow-500');
+                strengthBars[2].classList.remove('bg-gray-600');
+                strengthBars[2].classList.add('bg-yellow-500');
+                return;
+            }
+            
+            // Strong (4 bars)
+            strengthBars[0].classList.remove('bg-gray-600');
+            strengthBars[0].classList.add('bg-green-500');
+            strengthBars[1].classList.remove('bg-gray-600');
+            strengthBars[1].classList.add('bg-green-500');
+            strengthBars[2].classList.remove('bg-gray-600');
+            strengthBars[2].classList.add('bg-green-500');
+            strengthBars[3].classList.remove('bg-gray-600');
+            strengthBars[3].classList.add('bg-green-500');
+        });
+        
+        // Password confirmation check
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const matchMessage = document.getElementById('passwordMatch');
+            
+            if (confirmPassword.length > 0 && password !== confirmPassword) {
+                matchMessage.classList.remove('hidden');
+            } else {
+                matchMessage.classList.add('hidden');
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Validate password match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (!terms) {
+                alert('You must agree to the terms and conditions');
+                return;
+            }
+            
+            try {
+                // In a real app, you would send this to your backend API
+                // This is a simulation of that process
+                const response = await simulateRegisterAPI({ username, password });
+                
+                if (response.success) {
+                    // Store user data in localStorage (in a real app, you'd use more secure methods)
+                    localStorage.setItem('user', JSON.stringify({
+                        username,
+                        loggedIn: true
+                    }));
+                    
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                } else {
+                    alert(response.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('An error occurred during registration');
+            }
+        });
+
+        // Simulate API call (replace with real API call in production)
+        function simulateRegisterAPI(userData) {
+            return new Promise((resolve) => {
+                // Simulate network delay
+                setTimeout(() => {
+                    // Check if user already exists in localStorage
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    const userExists = users.some(user => 
+                        user.username === userData.username
+                    );
+                    
+                    if (userExists) {
+                        resolve({ success: false, message: 'Username already exists' });
+                    } else {
+                        // Add new user
+                        users.push({
+                            id: Date.now(),
+                            ...userData,
+                            createdAt: new Date().toISOString()
+                        });
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
+                        resolve({ success: true });
+                    }
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>

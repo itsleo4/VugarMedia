@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Content | VugarMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        premium: 'rgba(109,40,217,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .pro-container {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.95) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, rgba(109,40,217,0.1) 0%, rgba(147,51,234,0.1) 100%);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(109,40,217,0.4);
+        }
+        
+        .watch-btn {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .watch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(147,51,234,0.6);
+        }
+        
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .hero-glow {
+            text-shadow: 0 0 15px rgba(147,51,234,0.7);
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Overlay for non-pro users */
+        .access-denied-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #f8fafc;
+            padding: 20px;
+        }
+
+        .access-denied-overlay h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ef4444; /* Red for denial */
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+        }
+
+        .access-denied-overlay p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .access-denied-overlay .upgrade-btn {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            font-size: 1.125rem;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 20px rgba(147, 51, 234, 0.5);
+        }
+
+        .access-denied-overlay .upgrade-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(147, 51, 234, 0.7);
+        }
+    </style>
+</head>
+<body class="text-light min-h-screen">
+    <a href="index.html" class="fixed top-4 left-4 z-50 bg-primary/90 hover:bg-primary text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <div class="fixed top-4 right-4 z-50 flex space-x-2">
+        <button id="setProBtn" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm shadow-md">
+            Set Pro
+        </button>
+        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm shadow-md">
+            Logout
+        </button>
+    </div>
+
+    <div class="pro-container min-h-screen pb-16">
+        <div class="bg-gradient-to-r from-primary to-secondary py-16 md:py-24 text-center px-4">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="hero-glow text-4xl md:text-5xl font-bold mb-4">🔥 Exclusive VugarMedia Leaks — Members Only</h1>
+                <p class="text-xl md:text-2xl text-white/90">Enjoy full HD leaks, cosplay, futa, and more behind the velvet rope</p>
+                
+                <div class="mt-8 flex justify-center space-x-3">
+                    <div class="badge bg-white/10 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-crown text-yellow-400 mr-1"></i> Pro Member
+                    </div>
+                    <div class="badge bg-white/10 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-bolt text-purple-300 mr-1"></i> New Daily
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 py-12" id="proContentGrid">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/6d28d9/ffffff?text=HD+Preview" 
+                             alt="Busty Cosplay Compilation" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Busty Cosplay Compilation Vol.1</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 12:34
+                            </span>
+                            <a href="https://redgifs.com/watch/example1" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/9333ea/ffffff?text=HD+Preview" 
+                             alt="Futa Fantasy Special" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Futa Fantasy Special</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 8:45
+                            </span>
+                            <a href="https://strtape.cloud/embed/example2" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/6d28d9/ffffff?text=HD+Preview" 
+                             alt="ASMR Erotic Roleplay" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">ASMR Erotic Roleplay</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 15:22
+                            </span>
+                            <a href="https://redgifs.com/watch/example3" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/9333ea/ffffff?text=HD+Preview" 
+                             alt="BDSM Premium Collection" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">BDSM Premium Collection</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 22:18
+                            </span>
+                            <a href="https://strtape.cloud/embed/example4" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/6d28d9/ffffff?text=HD+Preview" 
+                             alt="Cosplay Creampie Compilation" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Cosplay Creampie Compilation</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 9:31
+                            </span>
+                            <a href="https://redgifs.com/watch/example5" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card rounded-xl overflow-hidden border border-gray-700">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/9333ea/ffffff?text=HD+Preview" 
+                             alt="Futa Office Fantasy" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                            <button class="action-btn text-white/70 hover:text-red-400">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-btn text-white/70 hover:text-yellow-300">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Futa Office Fantasy</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <i class="fas fa-clock mr-1"></i> 17:45
+                            </span>
+                            <a href="https://strtape.cloud/embed/example6" 
+                               target="_blank"
+                               class="watch-btn px-4 py-2 rounded-lg text-white font-medium">
+                                Watch Now <i class="fas fa-play ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all">
+                    <i class="fas fa-plus-circle mr-2"></i> Load More Content
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="accessDeniedOverlay" class="access-denied-overlay hidden">
+        <i class="fas fa-lock text-7xl mb-6 text-red-500 animate-pulse"></i>
+        <h2>Access Denied</h2>
+        <p>This content is exclusive to VugarMedia Pro members. Please upgrade your membership to unlock full access.</p>
+        <a href="membership.html" class="upgrade-btn">
+            Go Pro Now!
+        </a>
+    </div>
+
+    <footer class="bg-dark border-t border-gray-800 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-400 text-sm">
+            <p>© 2023 VugarMedia Pro. All content is exclusive to paying members.</p>
+            <div class="mt-2 flex justify-center space-x-4">
+                <a href="https://t.me/+Xa9CQA1GNS43MDM1" target="_blank" class="hover:text-primary"><i class="fab fa-telegram"></i></a>
+                <a href="https://www.instagram.com/freakypremiumunlock?igsh=MXQ1cnh1ajIxZTEwbg==" target="_blank" class="hover:text-primary"><i class="fab fa-instagram"></i></a>
+                <a href="https://whatsapp.com/channel/0029Vb6KSvMH5JM4M1uaBS0R" target="_blank" class="hover:text-primary"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accessDeniedOverlay = document.getElementById('accessDeniedOverlay');
+            const proContentGrid = document.getElementById('proContentGrid');
+            const setProBtn = document.getElementById('setProBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function checkProStatus() {
+                const isPro = localStorage.getItem('user_pro') === 'true';
+
+                if (!isPro) {
+                    // Hide content, show overlay
+                    proContentGrid.classList.add('hidden');
+                    accessDeniedOverlay.classList.remove('hidden');
+                    // Also hide the testing buttons when access is denied, they are for dev only.
+                    setProBtn.classList.add('hidden');
+                    logoutBtn.classList.add('hidden');
+                } else {
+                    // Show content, hide overlay
+                    proContentGrid.classList.remove('hidden');
+                    accessDeniedOverlay.classList.add('hidden');
+                    // Show testing buttons when pro
+                    setProBtn.classList.remove('hidden');
+                    logoutBtn.classList.remove('hidden');
+                }
+            }
+
+            // Initial check on page load
+            checkProStatus();
+
+            // Testing: Set Pro status
+            setProBtn.addEventListener('click', function() {
+                localStorage.setItem('user_pro', 'true');
+                alert('You are now a Pro Member! (Simulated)');
+                checkProStatus(); // Re-check and update UI
+            });
+
+            // Testing: Logout (remove Pro status)
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('user_pro');
+                alert('You have been logged out. Pro status removed. (Simulated)');
+                checkProStatus(); // Re-check and update UI
+            });
+            
+            // Like/Bookmark functionality (from original code)
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.querySelector('.fa-heart')) {
+                        this.classList.toggle('text-red-400');
+                        this.classList.toggle('text-white/70');
+                    } else if (this.querySelector('.fa-bookmark')) {
+                        this.classList.toggle('text-yellow-300');
+                        this.classList.toggle('text-white/70');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

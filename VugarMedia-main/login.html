@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | VugarMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        // Custom colors for the VugarMedia text logo (matching screenshot)
+                        vugarPurple: '#6d28d9', 
+                        mediaWhite: '#f8fafc', 
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .auth-container {
+            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(41,37,79,0.8) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); /* Tailwind's shadow-2xl equivalent */
+            border: 1px solid rgba(55, 65, 81, 0.5); /* border-gray-700 with opacity */
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(109,40,217,0.3);
+            border-color: #6d28d9; /* primary color */
+        }
+
+        /* Custom style for the VugarMedia text logo (matching screenshot) */
+        .vugar-logo-text .vugar {
+            color: #6d28d9; /* vugarPurple */
+            font-weight: bold;
+        }
+        .vugar-logo-text .media {
+            color: #f8fafc; /* mediaWhite */
+            font-weight: bold;
+        }
+
+        /* Styles for mobile menu (copied from explore.html for consistency) */
+        .mobile-menu-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50; /* Above other content */
+        }
+        .mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 40; /* Below panel, above content */
+        }
+        .mobile-menu-overlay.open {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <header class="bg-dark text-white p-4 shadow-lg sticky top-0 z-30">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold vugar-logo-text flex items-center">
+                <span class="vugar">Vugar</span><span class="media">Media</span>
+            </a>
+            
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="explore.html" class="hover:text-primary transition duration-300">Explore</a>
+                <a href="pro.html" class="hover:text-primary transition duration-300">Go Pro</a>
+                <a href="donate.html" class="hover:text-primary transition duration-300">Donate</a>
+                <a href="login.html" class="hover:text-primary transition duration-300 logged-out">Login</a>
+                
+                <div class="relative logged-in hidden">
+                    <button id="profileDropdown" class="flex items-center space-x-2 focus:outline-none hover:text-primary transition duration-300">
+                        <i class="fas fa-user-circle text-xl"></i>
+                        <span id="usernameDisplay"></span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="profileMenu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden z-40">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">My Account</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">Settings</a>
+                        <button id="logoutButtonDesktop" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">Logout</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center">
+                <button id="mobileMenuButton" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobileMenuPanel" class="mobile-menu-panel fixed inset-y-0 right-0 w-64 bg-gray-900 p-6 shadow-xl transform translate-x-full md:hidden z-50">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold vugar-logo-text"><span class="vugar">Vugar</span><span class="media">Media</span></h2>
+            <button id="closeMobileMenuButton" class="text-white focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-4">
+            <a href="explore.html" class="text-white hover:text-primary transition duration-300 text-lg">Explore</a>
+            <a href="pro.html" class="text-white hover:text-primary transition duration-300 text-lg">Go Pro</a>
+            <a href="donate.html" class="text-white hover:text-primary transition duration-300 text-lg">Donate</a>
+            <a href="login.html" class="text-white hover:text-primary transition duration-300 text-lg logged-out">Login</a>
+            
+            <div class="flex items-center space-x-2 logged-in hidden">
+                <i class="fas fa-user-circle text-xl"></i>
+                <span id="usernameDisplayMobile" class="text-lg"></span>
+            </div>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">My Account</a>
+            <a href="#" class="text-white hover:text-primary transition duration-300 text-lg logged-in hidden">Settings</a>
+            <button id="logoutButtonMobile" class="text-left text-red-400 hover:text-red-300 transition duration-300 text-lg logged-in hidden">Logout</button>
+        </nav>
+    </div>
+    <div id="mobileMenuOverlay" class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 md:hidden z-40"></div>
+
+    <main class="min-h-screen flex items-center justify-center p-4">
+        <div class="auth-container p-8 rounded-xl max-w-md w-full text-center">
+            <h1 class="text-3xl font-bold text-white mb-6">Login to VugarMedia</h1>
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <input type="text" id="username" placeholder="Username" required 
+                           class="input-field w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <input type="password" id="password" placeholder="Password" required 
+                           class="input-field w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+                </div>
+                <button type="submit" 
+                        class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                    Login
+                </button>
+            </form>
+            <p class="text-gray-400 text-sm mt-6">
+                Don't have an account? <a href="signup.html" class="text-primary hover:underline font-semibold">Sign Up</a>
+            </p>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-gray-400 p-8 mt-12">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4 vugar-logo-text"><span class="vugar">Vugar</span><span class="media">Media</span></h3>
+                <p class="text-sm">Exclusive content for a private audience. Dive deep into unique experiences.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="explore.html" class="hover:text-primary transition duration-300">Explore</a></li>
+                    <li><a href="pro.html" class="hover:text-primary transition duration-300">Go Pro</a></li>
+                    <li><a href="donate.html" class="hover:text-primary transition duration-300">Donate</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Connect</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-primary transition duration-300"><i class="fab fa-telegram mr-2"></i> Telegram</a></li>
+                    <li><a href="#" class="hover:text-primary transition duration-300"><i class="fas fa-envelope mr-2"></i> Contact Us</a></li>
+                </ul>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-primary transition duration-300"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition duration-300"><i class="fab fa-instagram text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+            &copy; 2025 VugarMedia. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- UI Logic (Copied from explore.html for consistent header/mobile menu) ---
+            const profileDropdown = document.getElementById('profileDropdown');
+            const profileMenu = document.getElementById('profileMenu');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const logoutButtonDesktop = document.getElementById('logoutButtonDesktop');
+            const logoutButtonMobile = document.getElementById('logoutButtonMobile');
+
+            // Toggle Profile Dropdown
+            if (profileDropdown) {
+                profileDropdown.addEventListener('click', function() {
+                    if (profileMenu) profileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (profileDropdown && profileMenu && !profileDropdown.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.add('hidden');
+                }
+            });
+
+            // Update UI based on login status (Global function or copy/paste if not global)
+            // Making updateUI global for now to ensure it works across pages
+            window.updateUI = function() {
+                const username = localStorage.getItem('username');
+                const isLoggedIn = !!username;
+                const loggedOutElements = document.querySelectorAll('.logged-out');
+                const loggedInElements = document.querySelectorAll('.logged-in');
+
+                if (isLoggedIn) {
+                    loggedOutElements.forEach(el => el.classList.add('hidden'));
+                    loggedInElements.forEach(el => el.classList.remove('hidden'));
+                    const usernameDisplay = document.getElementById('usernameDisplay');
+                    const usernameDisplayMobile = document.getElementById('usernameDisplayMobile');
+                    if (usernameDisplay) usernameDisplay.textContent = username;
+                    if (usernameDisplayMobile) usernameDisplayMobile.textContent = username;
+                } else {
+                    loggedOutElements.forEach(el => el.classList.remove('hidden'));
+                    loggedInElements.forEach(el => el.classList.add('hidden'));
+                }
+            }
+
+            // Logout function (Global for now)
+            window.logout = function() {
+                localStorage.removeItem('username');
+                localStorage.removeItem('user_pro'); // Clear pro status on logout
+                updateUI();
+                window.location.href = 'index.html'; // Redirect after logout
+            }
+
+            // Open Mobile Menu
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.add('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Close Mobile Menu
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Close Mobile Menu when clicking overlay
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', function() {
+                    if (mobileMenuPanel) mobileMenuPanel.classList.remove('open');
+                    if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('open');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+
+            // Logout Buttons
+            if (logoutButtonDesktop) {
+                logoutButtonDesktop.addEventListener('click', logout);
+            }
+            if (logoutButtonMobile) {
+                logoutButtonMobile.addEventListener('click', logout);
+            }
+            
+            // --- Login Form Logic (UPDATED) ---
+            const loginForm = document.getElementById('loginForm');
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const usernameInput = document.getElementById('username').value;
+                const passwordInput = document.getElementById('password').value;
+
+                // --- Simulate User Data with localStorage ---
+                // In a real application, this would be handled by a backend server and database.
+                // For now, we'll store a simple array of users in localStorage.
+                // If no 'users' array exists, initialize it with a sample user.
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                if (users.length === 0) {
+                    // Add a default user for easy testing
+                    users.push({ username: 'testuser', password: 'password123' });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    console.log('Default user "testuser" (password: "password123") added to localStorage.');
+                }
+
+                // Find the user in our simulated database
+                const foundUser = users.find(user => 
+                    user.username === usernameInput && user.password === passwordInput
+                );
+
+                if (foundUser) {
+                    // Simulate successful login
+                    localStorage.setItem('username', foundUser.username); // Store logged-in username
+                    alert('Login successful! Welcome, ' + foundUser.username + '!');
+                    updateUI(); // Update navigation bar
+                    window.location.href = 'index.html'; // Redirect to homepage
+                } else {
+                    alert('Login failed. Invalid username or password.');
+                }
+            });
+
+            // Call updateUI on page load to set correct visibility for login/logout buttons
+            updateUI();
+        });
+    </script>
+</body>
+</html>

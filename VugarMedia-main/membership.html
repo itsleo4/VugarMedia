@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Pro | VugarMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6d28d9',
+                        secondary: '#9333ea',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        premium: 'rgba(109,40,217,0.15)',
+                        cardBg: 'rgba(23, 23, 39, 0.7)',
+                        cardBorder: '#374151',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #6d28d9, 0 0 20px #6d28d9' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #9333ea, 0 0 40px #9333ea' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .membership-card {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.95) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(109, 40, 217, 0.25);
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+        }
+        
+        .payment-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.4);
+            background: linear-gradient(135deg, rgba(109,40,217,0.2) 0%, rgba(147,51,234,0.2) 100%);
+        }
+        
+        .payment-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.5);
+            background: linear-gradient(135deg, rgba(109,40,217,0.3) 0%, rgba(147,51,234,0.3) 100%);
+        }
+        
+        .payment-btn.active {
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+            box-shadow: 0 8px 25px rgba(109,40,217,0.6);
+        }
+        
+        .video-preview {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(109,40,217,0.5);
+        }
+        
+        .qr-code {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(109, 40, 217, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); }
+        }
+        
+        .telegram-btn {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(0,136,204,0.1) 0%, rgba(0,136,204,0.2) 100%);
+        }
+        
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(0,136,204,0.2) 0%, rgba(0,136,204,0.3) 100%);
+        }
+        
+        .social-link {
+            transition: all 0.2s ease;
+        }
+        
+        .social-link:hover {
+            transform: scale(1.05);
+        }
+        
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 50;
+        }
+        
+        /* Audio player hidden but functional */
+        #bgMusic {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Modal styles adapted from donate.html */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        visibility 0.4s;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .payment-modal {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(41,37,79,0.85) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 300px;
+            padding: 1.5rem;
+            position: relative;
+            transform: translateY(-30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid rgba(109, 40, 217, 0.5);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 
+                        0 0 50px rgba(109, 40, 217, 0.2);
+        }
+        
+        .modal-overlay.show .payment-modal {
+            transform: translateY(0) scale(1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            color: #f8fafc;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            color: #ef4444;
+        }
+        
+        .modal-content-inner {
+            text-align: center;
+        }
+
+        .qr-code-img {
+            width: 90%;
+            max-width: 160px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background-color: white;
+            padding: 6px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .payment-details-text {
+            color: #f8fafc;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+        
+        .amount-display p:first-child {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+        
+        .amount-display p:last-child {
+            color: var(--tw-colors-primary);
+            font-size: 1.875rem;
+            font-weight: 800;
+            text-shadow: 0 0 8px rgba(109, 40, 217, 0.7);
+            margin-top: 0.25rem;
+        }
+        
+        .auth-btn {
+            background: linear-gradient(to right, #6d28d9, #9333ea);
+            box-shadow: 0 4px 15px rgba(109,40,217,0.5);
+            transition: all 0.3s ease;
+        }
+        .auth-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(109,40,217,0.6);
+        }
+
+        /* Style for the preview image on the main page */
+        .membership-preview-image {
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 40px rgba(109,40,217,0.3);
+            border: 2px solid rgba(109,40,217,0.6);
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer; /* Indicate it's clickable */
+        }
+        .membership-preview-image:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 60px rgba(109,40,217,0.5);
+        }
+    </style>
+</head>
+<body class="text-light min-h-screen flex items-center justify-center p-4">
+    <a href="index.html" class="home-btn bg-primary/90 hover:bg-primary text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-home text-xl"></i>
+    </a>
+    
+    <audio id="bgMusic" autoplay loop>
+        <source src="assets/audio/ambient.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <div class="membership-card rounded-2xl border border-gray-700 w-full max-w-2xl overflow-hidden relative">
+        <div class="absolute inset-0 bg-premium opacity-30 pointer-events-none"></div>
+        
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-center relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 premium-badge px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                Premium Access
+            </div>
+            <a href="index.html" class="flex items-center justify-center space-x-2">
+                <div class="w-8 h-8 rounded-md bg-white/20 flex items-center justify-center">
+                    <i class="fas fa-crown text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold text-white">VugarMedia Pro</span>
+            </a>
+            <h1 class="text-3xl font-bold mt-4 text-white">Unlock Exclusive Vugar Content</h1>
+            <p class="text-white/80 mt-2">Join our elite community and access premium content not available anywhere else</p>
+        </div>
+        
+        <div class="p-6 md:p-8 relative">
+            <a href="explore.html" class="membership-preview-image mb-8 w-full h-48 md:h-64 flex items-center justify-center relative group">
+                <img src="assets/img/xxx.png" alt="Premium content preview" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <i class="fas fa-play text-white text-2xl"></i>
+                    </div>
+                </div>
+            </a>
+            
+            <div class="space-y-6">
+                <h2 class="text-xl font-bold text-center">Choose Your Payment Method</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="paymentOptions">
+                    <button 
+                        id="upiBtn"
+                        class="payment-btn p-4 rounded-xl border border-primary/30 flex flex-col items-center justify-center"
+                        onclick="showMembershipPaymentModal('upi')">
+                        <i class="fas fa-rupee-sign text-3xl mb-2"></i>
+                        <span class="font-bold">Pay with UPI</span>
+                        <span class="text-xs opacity-70 mt-1">Instant access</span>
+                    </button>
+                    
+                    <button 
+                        id="paypalBtn"
+                        class="payment-btn p-4 rounded-xl border border-primary/30 flex flex-col items-center justify-center"
+                        onclick="showMembershipPaymentModal('paypal')">
+                        <i class="fab fa-paypal text-3xl mb-2"></i>
+                        <span class="font-bold">Pay with PayPal</span>
+                        <span class="text-xs opacity-70 mt-1">Secure international payments</span>
+                    </button>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-center text-lg font-medium mb-4">Get Instant Support</h3>
+                    
+                    <div class="flex flex-col items-center mb-6">
+                        <a href="https://t.me/+Xa9CQA1GNS43MDM1" 
+                           target="_blank"
+                           class="telegram-btn px-6 py-3 rounded-lg flex items-center justify-center w-full max-w-xs mx-auto mb-2">
+                            <i class="fab fa-telegram text-2xl mr-3 text-[#0088cc]"></i>
+                            <span class="font-bold">Message us on Telegram</span>
+                        </a>
+                        <p class="text-xs opacity-60 text-center">For fastest response and premium support</p>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4">
+                        <a href="https://www.instagram.com/freakypremiumunlock?igsh=MXQ1cnh1ajIxZTEwbg==" 
+                           target="_blank"
+                           class="social-link w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        
+                        <a href="https://whatsapp.com/channel/0029Vb6KSvMH5JM4M1uaBS0R" 
+                           target="_blank"
+                           class="social-link w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="paymentModalOverlay" class="modal-overlay">
+        <div id="paymentModal" class="payment-modal">
+            <button class="close-btn" id="closeModalButton">&times;</button>
+            <div class="modal-content-inner">
+                <h2 class="text-lg font-bold mb-3 text-white text-center">Pro Membership</h2>
+                
+                <div id="qrCodeDisplay" class="w-full">
+                    <div id="upiQrSection" class="hidden flex flex-col items-center">
+                        <img src="assets/img/upi.png" alt="UPI QR Code" class="qr-code-img">
+                        <p class="payment-details-text text-center break-all mb-2" id="upiIdDisplay">bharti00077-2@okaxis</p>
+                        <p class="text-xs opacity-70 text-gray-400 mb-4">Tap to copy UPI ID or scan QR.</p>
+                        <button class="copy-upi-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm">
+                            <i class="fas fa-copy mr-2"></i> Copy UPI ID
+                        </button>
+                    </div>
+
+                    <div id="paypalQrSection" class="hidden flex flex-col items-center">
+                        <img src="assets/img/paypal.png" alt="PayPal QR Code" class="qr-code-img">
+                        <p class="payment-details-text text-center mb-2">PayPal.me Link</p>
+                        <a href="https://www.paypal.me/PawanKumar35438" target="_blank" class="text-primary hover:text-secondary font-bold text-sm break-all mb-4">
+                            PayPal.me/PawanKumar35438 <i class="fas fa-external-link-alt ml-1"></i>
+                        </a>
+                        <p class="text-xs opacity-70 text-gray-400">Tap link to pay. Include Username in notes.</p>
+                    </div>
+
+                    <button id="submitProofBtnModal" class="w-full px-6 py-3 rounded-md auth-btn text-white font-bold hover:opacity-90 transition transform hover:scale-105 mt-6">
+                        <i class="fas fa-check-circle mr-2"></i> I've Submitted Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Payment details configuration
+        const paymentMethods = {
+            upi: {
+                qr: 'assets/img/upi.png',
+                address: 'bharti00077-2@okaxis',
+            },
+            paypal: {
+                qr: 'assets/img/paypal.png',
+                address: 'https://www.paypal.me/PawanKumar35438',
+            }
+        };
+
+        const paymentModalOverlay = document.getElementById('paymentModalOverlay');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const upiQrSection = document.getElementById('upiQrSection');
+        const paypalQrSection = document.getElementById('paypalQrSection');
+        const upiIdDisplay = document.getElementById('upiIdDisplay');
+        const copyUpiButton = document.querySelector('.copy-upi-btn');
+        const submitProofBtnModal = document.getElementById('submitProofBtnModal');
+
+        // Function to show the membership payment modal
+        function showMembershipPaymentModal(method) {
+            paymentModalOverlay.classList.add('show');
+            // Hide all QR sections first
+            upiQrSection.classList.add('hidden');
+            paypalQrSection.classList.add('hidden');
+
+            // Display the selected QR section
+            if (method === 'upi') {
+                upiQrSection.classList.remove('hidden');
+                upiIdDisplay.textContent = paymentMethods.upi.address;
+            } else if (method === 'paypal') {
+                paypalQrSection.classList.remove('hidden');
+            }
+        }
+
+        // Function to hide the membership payment modal
+        function closeMembershipPaymentModal() {
+            paymentModalOverlay.classList.remove('show');
+        }
+
+        // Event listener for closing modal
+        closeModalButton.addEventListener('click', closeMembershipPaymentModal);
+        paymentModalOverlay.addEventListener('click', function(e) {
+            if (e.target === paymentModalOverlay) {
+                closeMembershipPaymentModal();
+            }
+        });
+
+        // Copy UPI ID functionality
+        if (copyUpiButton) {
+            copyUpiButton.addEventListener('click', function() {
+                const upiId = upiIdDisplay.textContent;
+                navigator.clipboard.writeText(upiId).then(() => {
+                    alert('UPI ID copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy UPI ID: ', err);
+                });
+            });
+        }
+        
+        // Submit proof handler (LOGIC UPDATED AS PER YOUR INSTRUCTIONS)
+        submitProofBtnModal.addEventListener('click', function() {
+            alert('Payment proof submitted! Please contact us on Telegram for instant activation.');
+            window.open('https://t.me/+Xa9CQA1GNS43MDM1', '_blank');
+            // This button's action is now purely to inform the user and direct them to Telegram.
+            // The actual PRO unlock will happen via backend API integration later by the buyer.
+        });
+
+        // Auto-play background music with user interaction
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        }, { once: true });
+        
+        // Initialize with first payment method if coming back to page
+        window.addEventListener('load', function() {
+            if (window.location.hash === '#upi') {
+                showMembershipPaymentModal('upi');
+            } else if (window.location.hash === '#paypal') {
+                showMembershipPaymentModal('paypal');
+            }
+        });
+    </script>
+</body>
+</html>
